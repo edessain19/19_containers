@@ -32,7 +32,14 @@ namespace ft
 			// Modifiers
 			void push (const value_type& val) {_cont.push_back(val); _size++;} //add an element at the stack
 			void pop() {_cont.pop_back(); _size--;} // Delete the last element of the stack
-	
+
+			//Relational operators ;
+			bool operator==(const stack<T,Container> &rhs) const { return _cont == rhs._cont; } //Will call relational operators of Container class
+			bool operator!=(const stack<T,Container> &rhs) const { return _cont != rhs._cont; }
+			bool operator<(const stack<T,Container> &rhs) const { return _cont < rhs._cont; }
+			bool operator<=(const stack<T,Container> &rhs) const { return _cont <= rhs._cont; }
+			bool operator>(const stack<T,Container> &rhs) const { return _cont > rhs._cont; }
+			bool operator>=(const stack<T,Container> &rhs) const { return _cont >= rhs._cont; }
 
 	};
 }
@@ -44,4 +51,4 @@ namespace ft
 // https://www.softwaretestinghelp.com/stacks-and-queues-in-stl/#Stack_Operations
 // https://www.javatpoint.com/cpp-stack
 // https://en.cppreference.com/w/cpp/container/deque
-// 
+// http://www.cplusplus.com/reference/stack/stack/operators/#:~:text=std%3A%3Arelational%20operators%20(stack)&text=Performs%20the%20appropriate%20comparison%20operation,on%20the%20underlying%20container%20objects
