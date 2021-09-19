@@ -29,9 +29,18 @@ namespace ft
 			T &top() { return _cont.back(); }
 			const T &top() const { return _cont.back(); }
 
-			// Modifiers
-			void push (const value_type& val) {_cont.push_back(val); _size++;} //add an element at the stack
-			void pop() {_cont.pop_back(); _size--;} // Delete the last element of the stack
+			//add an element at the top of the stack
+			void push(const value_type& val) 
+			{
+				_cont.push_back(val); 
+				_size++;
+			}
+			// Delete the last element of the stack
+			void pop() 
+			{
+				_cont.pop_back();
+				_size--;
+			}
 
 			//Relational operators ;
 			bool operator==(const stack<T,Container> &rhs) const { return _cont == rhs._cont; } //Will call relational operators of Container class
