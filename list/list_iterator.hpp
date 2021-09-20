@@ -35,20 +35,20 @@ namespace List
 			typedef char	var;
 			iterator(void): _list(NULL) {}
 			iterator(void* p_list): _list(static_cast<t_list *>(p_list)) {} // compilation error if the cast fails
-			iterator(const iterator<T>& oth) { *this = oth;}
+			iterator(const iterator<T>& copy) { *this = copy;}
 			virtual ~iterator(void) {}
 
 			t_list*		get_list(void) {return (_list);}
 			T&			operator*  (void) {return (_list->value);}
 			
-			iterator&	operator=  (const iterator<T>& oth)
+			iterator&	operator=  (const iterator<T>& copy)
 			{
-				_list = oth._list;
+				_list = copy._list;
 				return (*this);
 			}
 			
-			bool		operator== (const iterator<T>& oth) const {return (_list == oth._list);}
-			bool		operator!= (const iterator<T>& oth) const {return (_list != oth._list);}
+			bool		operator== (const iterator<T>& copy) const {return (_list == copy._list);}
+			bool		operator!= (const iterator<T>& copy) const {return (_list != copy._list);}
 			
 			iterator&	operator++ () // equal to ++var
 			{
@@ -89,13 +89,44 @@ namespace List
 	{
 		public:
 			reverse_iterator(void): iterator<T>() {}
-			reverse_iterator(void* p_list): iterator<T>(p_list) {} // compilation error if the cast fails
-			reverse_iterator(const reverse_iterator<T>& oth): iterator<T>() { this->_list = oth._list;}
+			reverse_iterator(void* p_list): iterator<T>(p_list) {}
+			reverse_iterator(const reverse_iterator<T>& copy): iterator<T>() { this->_list = copy._list;}
 			virtual ~reverse_iterator(void) {}
-			reverse_iterator&	operator++ () { if (this->_list->prev == 0) this->end(); else this->_list = this->_list->prev; return (*this);} // equal to ++var
-			reverse_iterator	operator++ (int) { reverse_iterator<T> tmp(*this); operator++(); return tmp;} // the (int) means that ++ is after the var // equal to var++
-			reverse_iterator&	operator-- () { if (this->_list->next == 0) this->begin(); else this->_list = this->_list->next; return (*this);} // equal to --var
-			reverse_iterator	operator-- (int) { reverse_iterator<T> tmp(*this); operator--(); return tmp;} // equal to var--
+
+			// Pre-increments by one
+			reverse_iterator& operator++()
+			{
+				if (this->_list->prev == 0) 
+					this->end(); 
+				else 
+					this->_list = this->_list->prev; 
+				return (*this);
+			}
+			// Post-increments by one - return a copy
+			reverse_iterator operator++(int)
+			{
+				reverse_iterator<T> tmp(*this); 
+				operator++(); 
+				return tmp;
+			}
+
+			// Pre-decrements by one
+			reverse_iterator& operator--()
+			{
+				if (this->_list->next == 0) 
+					this->begin(); 
+				else 
+					this->_list = this->_list->next; 
+				return (*this);
+			}
+
+			// Post-decrements by one - return a copy
+			reverse_iterator operator-- (int)
+			{
+				reverse_iterator<T> tmp(*this);
+				operator--();
+				return tmp;
+			}
 	};
 }
 
