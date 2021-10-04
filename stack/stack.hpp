@@ -1,63 +1,87 @@
-# ifndef STACK_HPP
+#ifndef STACK_HPP
 # define STACK_HPP
 
-#include <iostream>
-#include <deque>
+# include <deque>
+# include <iostream>
 
-//Namespaces provide a method for preventing name conflicts in large projects
 namespace ft
 {
-	template <typename T, typename Container = std::deque<T> > // double-ended queue is an indexed sequence container that allows fast insertion and deletion at both its beginning and its end.
-	class stack
-	{
-		private:
-			size_t		_size;
-			Container	_cont;
+    template < class T, class Container = std::deque<T> >
+    class stack
+    {
+        public:
+            ///// Member types /////
+            typedef T value_type;
+            typedef Container container_type;
+            typedef size_t size_type;
 
-		public:
-			typedef T value_type;
-			typedef Container container_type;
-			typedef size_t size_type;
-			
-			explicit stack(const Container &cont_ = Container()): _size(cont_.size()), _cont(cont_) {} //Constructs an adaptor object, adaptor because the object contruction depends on the template parameter; explicit to protect the function
+            ///// Member functions /////
+            explicit stack(const container_type& ctnr = container_type()): C(ctnr) {}
+            virtual ~stack() {}
+            stack& operator=(const stack& copy)
+            {
+                if (this != &copy)
+                {
+                    this->C = copy.C;
+                }
+                return (*this);
+            }
+            value_type& top()
+            {
+                return (this->C.back());
+            }
+            const value_type& top() const
+            {
+                return (this->C.back());
+            }
+            bool empty() const
+            {
+                return (this->C.empty());
+            }
+            size_type size() const
+            {
+                return (this->C.size());
+            }
+            void push(const value_type& val)
+            {
+                this->C.push_back(val);
+            }
+            void pop()
+            {
+                this->C.pop_back();
+            }
 
-			// Capacity
-			bool empty() const { return (_cont.empty()); }
-			size_t size() const { return _size; }
+        private:
+            ///// Non member function : relational operators /////
+            friend bool operator==(const stack& lhs, const stack& rhs)
+            {
+                return (lhs.C == rhs.C);
+            }
+            friend bool operator!=(const stack& lhs, const stack& rhs)
+            {
+                return (lhs.C != rhs.C);
+            }
+            friend bool operator<(const stack& lhs, const stack& rhs)
+            {
+                return (lhs.C < rhs.C);
+            }
+            friend bool operator<=(const stack& lhs, const stack& rhs)
+            {
+                return (lhs.C <= rhs.C);
+            }
+            friend bool operator>(const stack& lhs, const stack& rhs)
+            {
+                return (lhs.C > rhs.C);
+            }
+            friend bool operator>=(const stack& lhs, const stack& rhs)
+            {
+                return (lhs.C >= rhs.C);
+            }
 
-			// Element access
-			T &top() { return _cont.back(); }
-			const T &top() const { return _cont.back(); }
-
-			//add an element at the top of the stack
-			void push(const value_type& val) 
-			{
-				_cont.push_back(val); 
-				_size++;
-			}
-			// Delete the last element of the stack
-			void pop() 
-			{
-				_cont.pop_back();
-				_size--;
-			}
-
-			//Relational operators ;
-			bool operator==(const stack<T,Container> &rhs) const { return _cont == rhs._cont; } //Will call relational operators of Container class
-			bool operator!=(const stack<T,Container> &rhs) const { return _cont != rhs._cont; }
-			bool operator<(const stack<T,Container> &rhs) const { return _cont < rhs._cont; }
-			bool operator<=(const stack<T,Container> &rhs) const { return _cont <= rhs._cont; }
-			bool operator>(const stack<T,Container> &rhs) const { return _cont > rhs._cont; }
-			bool operator>=(const stack<T,Container> &rhs) const { return _cont >= rhs._cont; }
-
-	};
+        protected:
+                ///// Member object /////
+                container_type C;
+    };
 }
 
-# endif
-
-/////////////////////////////////////////////////////
-// https://www.cplusplus.com/reference/stack/stack/
-// https://www.softwaretestinghelp.com/stacks-and-queues-in-stl/#Stack_Operations
-// https://www.javatpoint.com/cpp-stack
-// https://en.cppreference.com/w/cpp/container/deque
-// http://www.cplusplus.com/reference/stack/stack/operators/#:~:text=std%3A%3Arelational%20operators%20(stack)&text=Performs%20the%20appropriate%20comparison%20operation,on%20the%20underlying%20container%20objects
+#endif
