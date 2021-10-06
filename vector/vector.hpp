@@ -16,6 +16,7 @@ namespace ft
 			T*													_ptr;
 		
 		public:
+			// -------------------- Typedef -------------------- //
 			typedef T											value_type;
 			typedef Alloc   									allocator_type;
 			typedef typename allocator_type::reference			reference;
@@ -41,7 +42,11 @@ namespace ft
 			}
 			// template <class InputIterator>
 			// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
-			vector (const vector& x) _base(x._base), _size(x._size) {};
+			vector (const vector& x) _base(allocator_type()), _size(x._size) , _capacity(x._capacity) 
+			{
+				this->_ptr = this->_base.allocate(0);
+				*this = x;
+			}
 			
 			// ---------- destructor ---------- //
 			~vector()
@@ -131,28 +136,44 @@ namespace ft
 				if (n >= this->_size)
 					throw std::out_of_range("vector");
 				else
-					return *(this->_ptr + n);
+					return (*(this->_ptr + n));
 			}
 			const_reference at (size_type n) const
 			{
 				if (n >= this->_size)
 					throw std::out_of_range("vector");
 				else
-					return *(this->_ptr + n);
+					return (*(this->_ptr + n));
 			}
 
-			reference front() { return *(this->_ptr); }
-			const_reference front() const { return *(this->_ptr); }
+			reference front() { return (*this->_ptr); }
+			const_reference front() const { return (*this->_ptr); }
 
-			reference back() { return *(this->_ptr + _size); }
-			const_reference back() const  { return *(this->_ptr + _size); }
+			reference back() { return (*(this->_ptr + _size - 1)); }
+			const_reference back() const  { return (*(this->_ptr + _size - 1)); }
 
 			// -------------------- Modifiers -------------------- //
 			// template <class InputIterator>
 			// void assign (InputIterator first, InputIterator last);
-			void assign (size_type n, const value_type& val);
+			void assign (size_type n, const value_type& val)
+			{
+				this->clear();
+				this->_base.deallocate(this->_ptr, this->_capacity);
+				this->_ptr = this->_base.allocate(n);
+				for (size_t i = 0; i < n; i++)
+					this->_base.construct(this->_ptr + i, val);
+				this->_size = n;
+				this->_capacity = n;
+			}
 
-			void push_back (const value_type& val);
+			void push_back (const value_type& val)
+			{
+
+				if (this->_capacity < this->_size + 1)
+					this->reserve(this->_size + 1);
+				this->_base.construct(this->_ptr + this->_size, val);
+				this->_size = this->_size + 1;
+			}
 			void pop_back();
 
 			// iterator insert (iterator position, const value_type& val);
