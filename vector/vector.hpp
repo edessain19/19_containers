@@ -174,7 +174,12 @@ namespace ft
 				this->_base.construct(this->_ptr + this->_size, val);
 				this->_size = this->_size + 1;
 			}
-			void pop_back();
+
+			void pop_back()
+			{
+				this->_size--;
+				this->_base.destroy(this->_ptr + this->_size);
+			}
 
 			// iterator insert (iterator position, const value_type& val);
 			// void insert (iterator position, size_type n, const value_type& val);
@@ -184,8 +189,23 @@ namespace ft
 			// iterator erase (iterator position);
 			// iterator erase (iterator first, iterator last);
 
-			void swap (vector& x);
-			void clear();
+			void swap (vector& x)
+			{
+				vector tmp;
+
+				tmp = *this;
+				this->clear();
+				*this = x;
+				x.clear();
+				x = tmp;
+			}
+
+			void clear()
+			{
+				for (size_t i = 0; i < this->_size; i++)
+					this->_base.destroy(this->_ptr + i);
+				this->_size = 0;
+			}
 
 			// template <class... Args>
 			// iterator emplace (const_iterator position, Args&&... args);
@@ -194,7 +214,7 @@ namespace ft
 			// void emplace_back (Args&&... args);
 
 			// -------------------- Allocator -------------------- //
-			// allocator_type get_allocator() const;
+			allocator_type get_allocator() const { return (_base); }
 
 			// -------------------- Non-member function overloads -------------------- //
 			template <class T, class Alloc>
