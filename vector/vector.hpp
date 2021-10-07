@@ -3,6 +3,7 @@
 
 # include <deque>
 # include <iostream>
+# include <iterator>
 
 namespace ft
 {
@@ -23,17 +24,17 @@ namespace ft
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef	typename allocator_type::pointer 			pointer;
 			typedef typename allocator_type::const_pointer 		const_pointer;
-			typedef ft::iterator<value_type>					iterator;
-			typedef ft::iterator<const value_type>				const_iterator;
-			typedef ft::reverse_iterator<value_type>			reverse_iterator;
-			typedef ft::reverse_iterator<const value_type>		const_reverse_iterator;
+			// typedef ft::iterator<value_type>					iterator;
+			// typedef ft::iterator<const value_type>				const_iterator;
+			// typedef ft::reverse_iterator<value_type>			reverse_iterator;
+			// typedef ft::reverse_iterator<const value_type>		const_reverse_iterator;
 			// typedef iterator_traits<iterator>::difference_type	difference_type;
 			typedef size_t										size_type;
 
 			// -------------------- Membre Functions -------------------- //
 			// ---------- constructor ---------- //
-			explicit vector (const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _base(alloc) { this->_ptr = this->_base(allocate(0)) };
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+			explicit vector (const allocator_type& alloc = allocator_type()) :  _size(0), _capacity(0) , _base(alloc) { this->_ptr = this->_base.allocate(0); }
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(n), _capacity(n), _base(alloc)
 			{
 				this->_ptr = this->_base.allocate(n);
 
@@ -41,8 +42,11 @@ namespace ft
 					this->_base.construct(this->_ptr + i, val);
 			}
 			// template <class InputIterator>
-			// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
-			vector (const vector& x) _base(allocator_type()), _size(x._size) , _capacity(x._capacity) 
+			// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			// {
+
+			// }
+			vector (const vector& x): _size(x._size) , _capacity(x._capacity), _base(allocator_type()) 
 			{
 				this->_ptr = this->_base.allocate(0);
 				*this = x;
@@ -88,7 +92,7 @@ namespace ft
 
 			// -------------------- Capacity -------------------- //
 			size_type size() const { return (this->_size); }
-			size_type max_size() const { return (this->_base.max_size()) }
+			size_type max_size() const { return (this->_base.max_size()); }
 			void resize (size_type n, value_type val = value_type())
 			{
 				if (n > this->_size)
@@ -101,14 +105,15 @@ namespace ft
 				{
 					for (size_t i = this->_size; i > n; i--)
 						this->_base.destroy(this->_ptr + i);
+					this->_size = n;
 				}
 			}
 			size_type capacity() const { return (this->_capacity); }
 			bool empty() const 
 			{
-				if (this->_size != 0)
-					return (false);
-				return (true);
+				if (this->_size == 0)
+					return (true);
+				return (false);
 			}
 			void reserve (size_type n)
 			{
@@ -217,22 +222,24 @@ namespace ft
 			allocator_type get_allocator() const { return (_base); }
 
 			// -------------------- Non-member function overloads -------------------- //
-			template <class T, class Alloc>
-			bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-			template <class T, class Alloc>
-			bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-			template <class T, class Alloc>
-			bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-			template <class T, class Alloc>
-			bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-			template <class T, class Alloc>
-			bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-			template <class T, class Alloc>
-			bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+			// template <class T, class Alloc>
+			// friend bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (lhs.V == rhs.V); }
+			// template <class T, class Alloc>
+			// friend bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (lhs.V != rhs.V); }
+			// template <class T, class Alloc>
+			// friend bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (lhs.V < rhs.V); }
+			// template <class T, class Alloc>
+			// friend bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (lhs.V <= rhs.V); }
+			// template <class T, class Alloc>
+			// friend bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (lhs.V > rhs.V); }
+			// template <class T, class Alloc>
+			// friend bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (lhs.V >= rhs.V); }
 
 			// -------------------- Non-member function overloads -------------------- //
-			template < class T, class Alloc = allocator<T> > class vector; // generic template
-			template <class Alloc> class vector<bool,Alloc>;               // bool specialization
+			// template < class T, class Alloc = allocator<T> > class vector; // generic template
+			// template <class Alloc> class vector<bool,Alloc>;               // bool specialization
 
-	}
+	};
 }
+
+#endif

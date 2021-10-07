@@ -13,6 +13,10 @@
 		"iterator": "cpp",
 		"unordered_map": "cpp",
 		"__node_handle": "cpp",
-		"memory_resource": "cpp"
+		"memory_resource": "cpp",
+		"stdexcept": "cpp",
+		"algorithm": "cpp",
+		"functional": "cpp",
+		"memory": "cpp"
 	}
 }
