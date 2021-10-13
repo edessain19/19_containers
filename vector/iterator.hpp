@@ -26,9 +26,8 @@ namespace ft
 	// -------------------- Iterator Traits -------------------- //
     // ---------- Iterator Traits ---------- //
 	template <class Iterator> 
-	class iterator_traits
+	struct iterator_traits
 	{
-		public:
 			typedef typename Iterator::value_type value_type;
     		typedef typename Iterator::difference_type difference_type;
     		typedef typename Iterator::pointer pointer;
@@ -38,9 +37,8 @@ namespace ft
 
     // ---------- Iterator Traits <T*> ---------- //
 	template <class T> 
-	class iterator_traits<T*>
+	struct iterator_traits<T*>
 	{
-		public:
 			typedef T value_type;
     		typedef ptrdiff_t difference_type;
     		typedef T* pointer;
@@ -50,9 +48,8 @@ namespace ft
 
     // ---------- Iterator Traits <const T*> ---------- //
 	template <class T> 
-	class iterator_traits<const T*>
+	struct iterator_traits<const T*>
 	{
-		public:
 			typedef T value_type;
     		typedef ptrdiff_t difference_type;
     		typedef const T* pointer;
@@ -61,7 +58,7 @@ namespace ft
 	};
 
     // ---------- Iterator ---------- //
-    template<class Category = ft::random_access_iterator_tag, class T = int, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T& >
+    template<class T>
     class It
     {
         private:
@@ -73,19 +70,31 @@ namespace ft
             typedef typename ft::iterator_traits<T*>::pointer               pointer;
             typedef typename ft::iterator_traits<T*>::iterator_category     iterator_category;
 
-            It(pointer ptr = nullptr);
-            ~It();
-            reference operator*() const;
-            pointer operator->();
-            It& operator++();
+            It(pointer ptr = nullptr) {}
+            ~It() {}
+            reference operator*() const { return *this->_ptr; }
+            pointer operator->() { return this->_ptr; }
+            It& operator++() { this->_ptr++; return *this; }
             It operator++(int);
             It& operator--();
             It operator--(int);
-            // friend of non member overload
-            friend bool operator==(const It& a, const It& b) { return a._ptr == b._ptr; }
-            friend bool operator!=(const It& a, const It& b) { return a._ptr != b._ptr; }
             It& operator=(const It & x) { this->_ptr = x._ptr; return *this; }
-            It& operator+=(difference_type n) const;
+            It& operator+=(difference_type n) const
+            {
+                difference_type m = n;
+
+                if (m >= 0)
+                {
+                    while (m--)
+                        ++(*this);
+                }
+                else
+                {
+                    while (m++) 
+                        --(*this);
+                }
+                return *this;
+            }
             It& operator+(const It & x) const;
             It& operator-=(const It & x) const;
             It& operator-(const It & x) const;
@@ -94,6 +103,8 @@ namespace ft
             bool operator>(const It & x) const;
             bool operator>=(const It & x) const;
             It& operator[](difference_type n);
+            friend bool operator==(const It& a, const It& b) { return a._ptr == b._ptr; }
+            friend bool operator!=(const It& a, const It& b) { return a._ptr != b._ptr; }
     };
 
     // ---------- Reverse Iterator ---------- //
