@@ -70,15 +70,28 @@ namespace ft
             typedef typename ft::iterator_traits<T*>::pointer               pointer;
             typedef typename ft::iterator_traits<T*>::iterator_category     iterator_category;
 
-            It(pointer ptr = nullptr) {}
+            It(pointer ptr = nullptr) { this->_ptr = ptr; }
             ~It() {}
             reference operator*() const { return *this->_ptr; }
             pointer operator->() { return this->_ptr; }
+
             It& operator++() { this->_ptr++; return *this; }
-            It operator++(int);
-            It& operator--();
-            It operator--(int);
-            It& operator=(const It & x) { this->_ptr = x._ptr; return *this; }
+            It operator++(int)
+            { 
+                It tmp = *this; 
+                ++(*this); 
+                return tmp; 
+            }
+            It& operator+(const It & x) const
+            { 
+                It temp = *this;
+                return temp += x;
+            }
+            It operator+(difference_type n) const 
+            { 
+                It temp = *this;
+                return temp += n;
+            }
             It& operator+=(difference_type n) const
             {
                 difference_type m = n;
@@ -95,14 +108,33 @@ namespace ft
                 }
                 return *this;
             }
-            It& operator+(const It & x) const;
-            It& operator-=(const It & x) const;
-            It& operator-(const It & x) const;
+
+            It& operator--()  { this->_ptr--; return *this; }
+            It operator--(int)
+            {
+                It tmp = *this;
+                --(*this); return tmp;
+            }
+            It& operator-(const It & x) const
+            {
+                It temp = *this;
+                return temp -= x;
+            }
+			It operator-(difference_type n) const
+            {
+                It temp = *this;
+                return temp -= n;
+            }
+            It& operator-=(const It & x) const { return *this += -x; }
+			It& operator-=(difference_type n) { return *this += -n; }
+
+            It& operator=(const It & x) { this->_ptr = x._ptr; return *this; }
             bool operator<(const It & x) const;
             bool operator<=(const It & x) const;
             bool operator>(const It & x) const;
             bool operator>=(const It & x) const;
-            It& operator[](difference_type n);
+
+            reference operator[](difference_type n) const { return *(this->_ptr + n); }
             friend bool operator==(const It& a, const It& b) { return a._ptr == b._ptr; }
             friend bool operator!=(const It& a, const It& b) { return a._ptr != b._ptr; }
     };

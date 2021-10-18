@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include "vector.hpp"
+#include "iterator.hpp"
 
 #define P(x) std::cout << x << std::endl
 
