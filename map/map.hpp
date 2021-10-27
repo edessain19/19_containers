@@ -6,16 +6,10 @@
 
 namespace ft
 {
-    template < template Key, template T, template Compare = ft::less<Key> >
+    template < class Key, class T, class Compare = ft::less<Key>, class Alloc = allocator<pair<const Key,T>>
     class map
     {
         private:
-            typedef	struct	s_map
-			{
-				struct s_map			*prev;
-				struct s_map			*next;
-				pair<Key, T>	        *value;
-			}				t_map;
             size_t  _size;
             t_map   *_map;
             init_map();
@@ -25,6 +19,13 @@ namespace ft
             typedef T                       mapped_type;
             typedef ft::pair<Key, T>        value_type;
             typedef Compare                 key_compare;
+
+        /* TODO
+        explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+        template <class InputIterator>
+        map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+        map (const map& x);
+        */
 
     };
 }
@@ -40,6 +41,5 @@ ft::map<T>::init_map()
         _map->prev = nullptr;
         _map->value = new ft::pair<KEY, T>():
 }
-
 
 #   endif

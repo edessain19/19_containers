@@ -17,6 +17,19 @@
 		"stdexcept": "cpp",
 		"algorithm": "cpp",
 		"functional": "cpp",
-		"memory": "cpp"
+		"memory": "cpp",
+		"__functional_base": "cpp",
+		"atomic": "cpp",
+		"chrono": "cpp",
+		"__memory": "cpp",
+		"optional": "cpp",
+		"limits": "cpp",
+		"locale": "cpp",
+		"ratio": "cpp",
+		"system_error": "cpp",
+		"tuple": "cpp",
+		"type_traits": "cpp",
+		"iostream": "cpp",
+		"ostream": "cpp"
 	}
 }
