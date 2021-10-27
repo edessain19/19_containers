@@ -6,6 +6,16 @@
 
 namespace ft
 {
+    template <class T1, class T2>
+    struct pair
+    {
+        typedef T1 first_type;
+        typedef T2 second_type;
+
+        T1 first;
+        T2 second;
+    };
+    
     template < class Key, class T, class Compare = std::less<Key>, class Alloc = allocator<pair<const Key,T>>
     class map
     {
@@ -16,21 +26,21 @@ namespace ft
             size_t  _capacity;
 
         public:
-            typedef Key key_type
-            typedef T mapped_type
-            typedef typename ft::pair<const Key, T> value_type
-            typedef size_t size_type
-            typedef ptrdiff_t difference_type
-            typedef Compare key_compare
-            typedef Allocator allocator_type
-            typedef value_type& reference
-            typedef const value_type& const_reference
-            typedef Allocator::pointer pointer 
-            typedef Allocator::const_pointer const_pointer
-            // typedef iterator	LegacyBidirectionalIterator to value_type
-            // typedef const_iterator	LegacyBidirectionalIterator to const value_type
-            // typedef ft::reverse_iterator<iterator> reverse_iterator
-            // typedef ft::reverse_iterator<const_iterator> const_reverse_iterator
+            typedef Key key_type;
+            typedef T mapped_type;
+            typedef typename ft::pair<const Key, T> value_type;
+            typedef size_t size_type;
+            typedef ptrdiff_t difference_type;
+            typedef Compare key_compare;
+            typedef Allocator allocator_type;
+            typedef value_type& reference;
+            typedef const value_type& const_reference;
+            typedef Allocator::pointer pointer;
+            typedef Allocator::const_pointer const_pointer;
+            // typedef iterator	LegacyBidirectionalIterator to value_type;
+            // typedef const_iterator	LegacyBidirectionalIterator to const value_type;
+            // typedef ft::reverse_iterator<iterator> reverse_iterator;
+            // typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
             
             // explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
             // template <class InputIterator>

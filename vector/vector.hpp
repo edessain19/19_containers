@@ -238,7 +238,7 @@ namespace ft
             {
                 pointer tmp;
                 size_t  tmp2;
-                size_t  tmp3;
+                size_t  tmp3;T
 
                 tmp = this->_ptr;
                 tmp2 = this->_size;
