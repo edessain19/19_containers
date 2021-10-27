@@ -100,7 +100,7 @@ namespace ft
 
 			// -------------------- Capacity -------------------- //
 			size_type size() const { return (this->_size); }
-			size_type max_size() const { return (this->_base.max_size()); }
+			size_type max_size() const { return (this->_capacity); }
 			void resize (size_type n, value_type val = value_type())
 			{
 				if (n > this->_size)
@@ -235,15 +235,21 @@ namespace ft
 			}
 
 			void swap (vector& x)
-			{
-				vector tmp;
+            {
+                pointer tmp;
+                size_t  tmp2;
+                size_t  tmp3;
 
-				tmp = *this;
-				this->clear();
-				*this = x;
-				x.clear();
-				x = tmp;
-			}
+                tmp = this->_ptr;
+                tmp2 = this->_size;
+                tmp3 = this->capacity;
+                this->_ptr = x._ptr;
+                this->_size = x._size;
+                this->capacity = x.capacity;
+                x._ptr = tmp;
+                x._size = tmp2;
+                x._capacity = tmp3;
+            }
 
 			void clear()
 			{
@@ -259,10 +265,10 @@ namespace ft
 			// void emplace_back (Args&&... args);
 
 			// -------------------- Allocator -------------------- //
-			allocator_type get_allocator() const { return (_base); }
+			allocator_type get_allocator() const { return (this->_base); }
 
-			// -------------------- Non-member function overloads -------------------- //
-			template <class T, class Alloc>
+	// -------------------- Non-member function overloads -------------------- //
+	template <class T, class Alloc>
     bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
     {
         if (lhs.size() != rhs.size())

@@ -253,7 +253,7 @@ namespace ft
 			root->color = 0;
 		}
 
-		void printHelper(NodePtr root, string indent, bool last) {
+		void printHelper(NodePtr root, std::string indent, bool last) {
 			// print the tree structure on the screen
 			if (root != TNULL) {
 			std::cout<<indent;
@@ -265,7 +265,7 @@ namespace ft
 				indent += "|    ";
 			}
 				
-			string sColor = root->color?"RED":"BLACK";
+			std::string sColor = root->color?"RED":"BLACK";
 			std::cout<<root->data<<"("<<sColor<<")"<<std::endl;
 			printHelper(root->left, indent, false);
 			printHelper(root->right, indent, true);
