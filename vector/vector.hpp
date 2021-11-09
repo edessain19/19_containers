@@ -82,8 +82,8 @@ namespace ft
 			}
 
 			// -------------------- Iterator -------------------- //
-			iterator begin() { return (iterator(this->ptr)); }
-			const_iterator begin() const { return (const_iterator(this->ptr)); }
+			iterator begin() { return (iterator(this->_ptr)); }
+			const_iterator begin() const { return (const_iterator(this->_ptr)); }
 
 			iterator end() { return (iterator(this->_ptr + this->_size)); }
 			const_iterator end() const { return (const_iterator(this->_ptr + this->_size)); }
