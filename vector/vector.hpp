@@ -104,6 +104,7 @@ namespace ft
 					this->reserve(n);
 					for (size_t i = this->_size; i < n; i++)
 						this->_base.construct(this->_ptr + i, val);
+					this->_size = n;
 				}
 				else if (n < this->_size)
 				{
