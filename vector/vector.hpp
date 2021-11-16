@@ -104,14 +104,13 @@ namespace ft
 					this->reserve(n);
 					for (size_t i = this->_size; i < n; i++)
 						this->_base.construct(this->_ptr + i, val);
-					this->_size = n;
 				}
 				else if (n < this->_size)
 				{
 					for (size_t i = this->_size; i < n; i++)
 						this->_base.destroy(this->_ptr + i);
-					this->_size = n;
 				}
+				this->_size = n;
 			}
 			size_type capacity() const { return (this->_capacity); }
 			bool empty() const 
@@ -120,6 +119,7 @@ namespace ft
 					return (true);
 				return (false);
 			}
+
 			void reserve (size_type n)
 			{
 				if (n > this->_capacity)
@@ -177,17 +177,12 @@ namespace ft
 			}
 			void push_back (const value_type& val)
 			{
-
-				if (this->_capacity < this->_size + 1)
-					this->reserve(this->_size + 1);
-				this->_base.construct(this->_ptr + this->_size, val);
-				this->_size = this->_size + 1;
+				resize(this->_size + 1, val);
 			}
 
 			void pop_back()
 			{
-				this->_size--;
-				this->_base.destroy(this->_ptr + this->_size);
+				resize(this->_size - 1, value_type());
 			}
 
 			iterator insert(iterator position, const value_type& val)

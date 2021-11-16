@@ -174,49 +174,80 @@ namespace ft
 	//////////////////// Bidirectional  Iterator //////////////
 	///////////////////////////////////////////////////////////
 
-	// template < class Iterator >
-	// class bidirectional_iterator
-	// {
+	template < class Iterator >
+	class bidirectional_iterator
+	{
 
-	//     public:
-	//         // ------------------- Member types ------------------- //
-	//         typedef Iterator                                                    iterator_type;
-	//         typedef typename ft::iterator_traits<Iterator>::iterator_category   iterator_category;
-	//         typedef typename ft::iterator_traits<Iterator>::value_type          value_type;
-	//         typedef typename ft::iterator_traits<Iterator>::difference_type     difference_type;
-	//         typedef typename ft::iterator_traits<Iterator>::pointer             pointer;
-	//         typedef typename ft::iterator_traits<Iterator>::reference           reference;
-	//         typedef Node*                                                       nodePtr;
+	    public:
+	        // ------------------- Member types ------------------- //
+	        typedef Iterator                                                    iterator_type;
+	        typedef typename ft::iterator_traits<Iterator>::iterator_category   iterator_category;
+	        typedef typename ft::iterator_traits<Iterator>::value_type          value_type;
+	        typedef typename ft::iterator_traits<Iterator>::difference_type     difference_type;
+	        typedef typename ft::iterator_traits<Iterator>::pointer             pointer;
+	        typedef typename ft::iterator_traits<Iterator>::reference           reference;
+	        typedef Node*                                                       nodePtr;
 
-	//         bidirectional_iterator(): current() {}
+	        bidirectional_iterator(): current() {}
 			
-	//         explicit bidirectional_iterator(iterator_type x): current(x) {}
+	        explicit bidirectional_iterator(iterator_type x): current(x) {}
 			
-	//         template < class U >
-	//         bidirectional_iterator(const bidirectional_iterator<U>& copy): current(copy.current) {}
+	        template < class U >
+	        bidirectional_iterator(const bidirectional_iterator<U>& copy): current(copy.current) {}
 			
-	//         template < class U >
-	//         bidirectional_iterator& operator=(const bidirectional_iterator<U>& copy)
-	//         {
-	//             if (this != &copy)
-	//                 this->current = copy.current;
-	//                 this->node = copy.node;
-	//             return (*this);
-	//         }
+	        template < class U >
+	        bidirectional_iterator& operator=(const bidirectional_iterator<U>& copy)
+	        {
+	            if (this != &copy)
+	                this->current = copy.current;
+	                this->node = copy.node;
+	            return (*this);
+	        }
 
-	//         // ------------------- Member functions ------------------- //
-	//         reference operator*() const { return (node->data); }
-	//         pointer operator->() const { return &(bidirectional_iterator::operator*()); }
-	//         iterator_type base() const { return (Iterator(this->current)); }
-	//         bidirectional_iterator& operator++() { this->current++; return (*this); }
-	//         bidirectional_iterator& operator--() { this->current--; return (*this); }
-	//         bidirectional_iterator operator++(int) { bidirectional_iterator tmp = *this; this->current++; return tmp; }
-	//         bidirectional_iterator operator--(int) { bidirectional_iterator tmp = *this; this->current--; return tmp; }
+	        // ------------------- Member functions ------------------- //
+	        reference operator*() const { return (node->value); }
+	        pointer operator->() const { return (&this->_node->value); }
+	        iterator_type base() const { return (Iterator(this->current)); }
 
-	//     protected:
-	//         nodePtr    node;
-	//         iterator_type current;
-	// };
+	        bidirectional_iterator& operator++() { this->current++; return (*this); }
+			// bidirectional_iterator& operator++()
+			// {
+			// 	T* cursor = _node;
+
+			// 	if (_node->right == _last_node)
+			// 	{
+			// 		cursor = _node->parent;
+			// 		while (cursor != _last_node
+			// 			&& _comp(cursor->value.first, _node->value.first))
+			// 			cursor = cursor->parent;
+			// 		_node = cursor;
+			// 	}
+			// 	else if (cursor == _last_node)
+			// 		_node = _last_node->right;
+			// 	else
+			// 	{
+			// 		cursor = _node->right;
+			// 		if (cursor == _last_node->parent
+			// 			&& cursor->right == _last_node)
+			// 			_node = cursor;
+			// 		else
+			// 		{
+			// 			while (cursor->left != _last_node)
+			// 				cursor = cursor->left;
+			// 		}
+			// 		_node = cursor;
+			// 	}
+			// 	return (*this);
+			// }
+
+	        bidirectional_iterator& operator--() { this->current--; return (*this); }
+	        bidirectional_iterator operator++(int) { bidirectional_iterator tmp = *this; this->current++; return tmp; }
+	        bidirectional_iterator operator--(int) { bidirectional_iterator tmp = *this; this->current--; return tmp; }
+
+	    protected:
+	        nodePtr    node;
+	        iterator_type current;
+	};
 
 	///////////////////////////////////////////////////////////
 	//////////////////// Reverse Iterator /////////////////////

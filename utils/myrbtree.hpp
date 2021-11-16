@@ -44,7 +44,7 @@ namespace ft
 				}
 				if (parent && (val.first == parent->data.first))
 					return (nullptr);
-				pointer toInsert = node_alloc.allocate(1);
+				Node_pointer toInsert = node_alloc.allocate(1);
 				toInsert->data.first = val.first;
 				toInsert->data.second = val.second;
 				toInsert->parent = parent;

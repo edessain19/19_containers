@@ -72,6 +72,32 @@ namespace ft
     template<> struct is_integral<const unsigned int> : public ft::integral_constant<bool, true> {};
     template<> struct is_integral<const unsigned long int> : public ft::integral_constant<bool, true> {};
     template<> struct is_integral<const unsigned long long int> : public ft::integral_constant<bool, true> {};
+
+	/*pair*/
+	template <class T1, class T2>
+	struct pair
+	{
+		typedef T1 first_type;
+		typedef T2 second_type;
+
+		T1 first;
+		T2 second;
+	};
+
+	/*less*/
+	template< class T >
+	struct less
+	{
+		typedef bool	result_type;
+		typedef T		first_argument_type;
+		typedef T 		second_argument_type;
+
+		bool operator()(const T &lhs, const T &rhs) const
+		{
+			return lhs < rhs; // assumes that the implementation uses a flat address space
+		}
+	};
+
 }
 
 #endif
