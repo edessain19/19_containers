@@ -3,15 +3,15 @@
 
 # include <cstddef>
 # include <iostream>
-// # include "myrbtree.hpp"
+# include "myrbtree.hpp"
 
 namespace ft
 {
 	struct input_iterator_tag {};
 	struct output_iterator_tag {};
 	struct forward_iterator_tag : public input_iterator_tag {};
-	struct bidirectional_iterator_tag : public forward_iterator_tag {};
-	struct random_acces_iterator_tag : public bidirectional_iterator_tag {};
+	struct Itmap_tag : public forward_iterator_tag {};
+	struct random_acces_iterator_tag : public Itmap_tag {};
 
 	template < class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T& >
 	struct iterator
@@ -116,87 +116,34 @@ namespace ft
 	//////////////////// Iterator : Map ///////////////////////
 	///////////////////////////////////////////////////////////
 
-	template < class T >
+	template < typename T, class Compare >
 	class Itmap
-	{
-		public:
-			//------------------- Member types -------------------//
-			typedef typename ft::iterator_traits<T*>::iterator_category   iterator_category;
-			typedef typename ft::iterator_traits<T*>::value_type          value_type;
-			typedef typename ft::iterator_traits<T*>::difference_type     difference_type;
-			typedef typename ft::iterator_traits<T*>::pointer             pointer;
-			typedef typename ft::iterator_traits<T*>::reference           reference;
-
-			//------------------- Member functions : Constructors / Destructor -------------------//
-			Itmap(pointer ptr = nullptr): _ptr(ptr) {}
-			~Itmap() { _ptr = nullptr; }
-			template < class U >
-			Itmap& operator=(const Itmap<U>& copy)                  ////// template maybe not necessary
-			{
-				if (this != &copy)
-					this->_ptr = copy._ptr;
-				return (*this);
-			} 
-
-			//------------------- Member functions -------------------//
-			reference operator*() const { return (*this->_ptr); }
-			pointer operator->() const { return (this->_ptr); }
-			Itmap& operator++() { this->_ptr++; return (*this); }
-			Itmap operator++(int) { Itmap tmp = *this; ++(*this); return (tmp); }
-			Itmap& operator+=(difference_type n) { this->_ptr += n; return (*this); }
-			Itmap operator+(difference_type n) const { Itmap tmp = *this; return (tmp += n); }
-			Itmap& operator-=(difference_type n) { this->_ptr -= n; return (*this); }
-			Itmap operator-(difference_type n) const { Itmap tmp = *this; return (tmp -= n); }
-			Itmap& operator--() { this->_ptr--; return (*this); }
-			Itmap  operator--(int) { Itmap tmp = *this; --(*this); return (tmp); }
-			reference operator[](difference_type n) const { return *(this->_ptr + n); }
-
-			pointer getPtr() const { return (this->_ptr); }
-
-		private:
-			pointer _ptr;
-	};
-	//-------------------- Itmap non-member functions --------------------//
-	template < class T >
-	bool operator==(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.getPtr() == rhs.getPtr()); }
-	template < class T >
-	bool operator!=(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.getPtr() != rhs.getPtr()); }
-	template < class T >
-	bool operator<(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.getPtr() < rhs.getPtr()); }
-	template < class T >
-	bool operator<=(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.getPtr() <= rhs.getPtr()); }
-	template < class T >
-	bool operator>(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.getPtr() > rhs.getPtr()); }
-	template < class T >
-	bool operator>=(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.getPtr() >= rhs.getPtr()); }
-
-	///////////////////////////////////////////////////////////
-	//////////////////// Bidirectional  Iterator //////////////
-	///////////////////////////////////////////////////////////
-
-	template < class Iterator >
-	class bidirectional_iterator
 	{
 
 	    public:
 	        // ------------------- Member types ------------------- //
 	        typedef Iterator                                                    iterator_type;
-	        typedef typename ft::iterator_traits<Iterator>::iterator_category   iterator_category;
-	        typedef typename ft::iterator_traits<Iterator>::value_type          value_type;
-	        typedef typename ft::iterator_traits<Iterator>::difference_type     difference_type;
-	        typedef typename ft::iterator_traits<Iterator>::pointer             pointer;
-	        typedef typename ft::iterator_traits<Iterator>::reference           reference;
+	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::iterator_category   iterator_category;
+	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::value_type          value_type;
+	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::difference_type     difference_type;
+	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::pointer             pointer;
+	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::reference           reference;
 	        typedef Node*                                                       nodePtr;
 
-	        bidirectional_iterator(): current() {}
+			Compare		_comp;
+			nodePtr		_node;
+			nodePtr		_lastnode;
+
+
+	        Itmap(): current() {}
 			
-	        explicit bidirectional_iterator(iterator_type x): current(x) {}
+	        explicit Itmap(iterator_type x): current(x) {}
 			
 	        template < class U >
-	        bidirectional_iterator(const bidirectional_iterator<U>& copy): current(copy.current) {}
+	        Itmap(const Itmap<U>& copy): current(copy.current) {}
 			
 	        template < class U >
-	        bidirectional_iterator& operator=(const bidirectional_iterator<U>& copy)
+	        Itmap& operator=(const Itmap<U>& copy)
 	        {
 	            if (this != &copy)
 	                this->current = copy.current;
@@ -209,40 +156,79 @@ namespace ft
 	        pointer operator->() const { return (&this->_node->value); }
 	        iterator_type base() const { return (Iterator(this->current)); }
 
-	        bidirectional_iterator& operator++() { this->current++; return (*this); }
-			// bidirectional_iterator& operator++()
-			// {
-			// 	T* cursor = _node;
+			Itmap& operator++()
+			{
+				nodePtr cursor = _node;
 
-			// 	if (_node->right == _last_node)
-			// 	{
-			// 		cursor = _node->parent;
-			// 		while (cursor != _last_node
-			// 			&& _comp(cursor->value.first, _node->value.first))
-			// 			cursor = cursor->parent;
-			// 		_node = cursor;
-			// 	}
-			// 	else if (cursor == _last_node)
-			// 		_node = _last_node->right;
-			// 	else
-			// 	{
-			// 		cursor = _node->right;
-			// 		if (cursor == _last_node->parent
-			// 			&& cursor->right == _last_node)
-			// 			_node = cursor;
-			// 		else
-			// 		{
-			// 			while (cursor->left != _last_node)
-			// 				cursor = cursor->left;
-			// 		}
-			// 		_node = cursor;
-			// 	}
-			// 	return (*this);
-			// }
+				if (_node->right == _lastnode)
+				{
+					cursor = _node->parent;
+					while (cursor != _lastnode
+						&& _comp(cursor->value.first, _node->value.first))
+						cursor = cursor->parent;
+					_node = cursor;
+				}
+				else if (cursor == _lastnode)
+					_node = _lastnode->right;
+				else
+				{
+					cursor = _node->right;
+					if (cursor == _lastnode->parent
+						&& cursor->right == _lastnode)
+						_node = cursor;
+					else
+					{
+						while (cursor->left != _lastnode)
+							cursor = cursor->left;
+					}
+					_node = cursor;
+				}
+				return (*this);
+			}
 
-	        bidirectional_iterator& operator--() { this->current--; return (*this); }
-	        bidirectional_iterator operator++(int) { bidirectional_iterator tmp = *this; this->current++; return tmp; }
-	        bidirectional_iterator operator--(int) { bidirectional_iterator tmp = *this; this->current--; return tmp; }
+	        Itmap operator++(int) 
+			{
+				Itmap tmp(*this);
+				operator++();
+				return (tmp);
+			}
+
+	        Itmap& operator--()
+			{
+				nodePtr cursor = _node;
+
+				if (_node->left == _lastnode)
+				{
+					cursor = _node->parent;
+					while (cursor != _lastnode
+						&& !_comp(cursor->value.first, _node->value.first))
+						cursor = cursor->parent;
+					_node = cursor;
+				}
+				else if (cursor == _lastnode)
+					_node = _lastnode->right;
+				else
+				{
+					cursor = _node->left;
+					if (cursor == _lastnode->parent
+						&& cursor->left == _lastnode)
+						_node = cursor;
+					else
+					{
+						while (cursor->right != _lastnode)
+							cursor = cursor->right;
+					}
+					_node = cursor;
+				}
+				return (*this);
+			}
+
+	        Itmap operator--(int)
+			{
+				Itmap tmp(*this);
+				operator--();
+				return (tmp);
+			}
 
 	    protected:
 	        nodePtr    node;
