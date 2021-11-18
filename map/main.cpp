@@ -2,3 +2,8 @@
 #include <iostream>
 #include "map.hpp"
 
+int main()
+{
+
+
+}

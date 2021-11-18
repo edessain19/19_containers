@@ -2,6 +2,7 @@
 # define MAP_HPP
 
 #include <iostream>
+#include <deque>
 #include <limits>
 #include "../utils/utils.hpp"
 #include "../utils/iterator.hpp"
@@ -9,17 +10,17 @@
 
 namespace ft
 {
-	template <class T1, class T2>
-	struct pair
-	{
-		typedef T1 first_type;
-		typedef T2 second_type;
+	// template <class T1, class T2>
+	// struct pair
+	// {
+	// 	typedef T1 first_type;
+	// 	typedef T2 second_type;
 
-		T1 first;
-		T2 second;
-	};
+	// 	T1 first;
+	// 	T2 second;
+	// };
 	
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = allocator<pair<const Key,T>>
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
 	class map
 	{
 		private:
@@ -35,11 +36,11 @@ namespace ft
 			typedef size_t size_type;
 			typedef ptrdiff_t difference_type;
 			typedef Compare key_compare;
-			typedef Allocator allocator_type;
+			typedef Alloc allocator_type;
 			typedef value_type& reference;
 			typedef const value_type& const_reference;
-			typedef Allocator::pointer pointer;
-			typedef Allocator::const_pointer const_pointer;
+			typedef typename Alloc::pointer pointer;
+			typedef typename Alloc::const_pointer const_pointer;
 			// typedef iterator	LegacyBidirectionalIterator to value_type;
 			// typedef const_iterator	LegacyBidirectionalIterator to const value_type;
 			// typedef ft::reverse_iterator<iterator> reverse_iterator;
@@ -88,7 +89,7 @@ namespace ft
 			// iterator insert( iterator hint, const value_type& value );
 			// void erase( iterator pos );
 			// void erase( iterator first, iterator last );
-			void swap( map& other )
+			void swap( map& copy )
 			{
 				pointer tmp;
 				size_t  tmp2;
@@ -97,12 +98,12 @@ namespace ft
 				tmp = this->_ptr;
 				tmp2 = this->_size;
 				tmp3 = this->capacity;
-				this->_ptr = other._ptr;
-				this->_size = other._size;
-				this->capacity = other.capacity;
-				other._ptr = tmp;
-				other._size = tmp2;
-				other._capacity = tmp3;
+				this->_ptr = copy._ptr;
+				this->_size = copy._size;
+				this->capacity = copy.capacity;
+				copy._ptr = tmp;
+				copy._size = tmp2;
+				copy._capacity = tmp3;
 			}
 
 			// -------------------- Lookup -------------------- //
