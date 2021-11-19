@@ -289,7 +289,6 @@ namespace ft
 					{
 						z = node;
 					}
-
 					if (node->data <= key)
 					{
 						node = node->right;
@@ -364,6 +363,24 @@ namespace ft
 					}   
 				}
 				return (nullptr);
+			}
+
+			node_pointer lastNode()
+			{
+				node_pointer last = this->root;
+
+				while (last && last->right != nullptr)
+					last = last->right;
+				return (last);
+			}
+
+			node_pointer firstNode()
+			{
+				node_pointer first = this->root;
+
+				while (first && first->left != nullptr)
+					first = first->left;
+				return (first);
 			}
 
 		private:

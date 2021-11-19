@@ -28,6 +28,7 @@ namespace ft
 			T*      _ptr;
 			size_t  _size;
 			size_t  _capacity;
+			BTree<Key, T, ft::pair< const Key, T > > _tree;
 
 		public:
 			typedef Key key_type;
@@ -56,17 +57,38 @@ namespace ft
 			// map& operator= (const map& x);
 
 			// // -------------------- Iterator -------------------- //
-			// iterator begin();
-			// const_iterator begin() const;
-			
-			// iterator end();
-			// const_iterator end() const;
-
-			// reverse_iterator rbegin();
-			// const_reverse_iterator rbegin() const;
-
-			// reverse_iterator rend();
-			// const_reverse_iterator rend() const;
+			iterator begin()
+			{
+				return (iterator(_tree->firstnode()));
+			}
+			const_iterator begin() const
+			{
+				return (iterator(_tree->firstnode()));
+			}
+			iterator end()
+			{
+				return (iterator(_tree->lastnode())++);
+			}
+			const_iterator end() const
+			{
+				return (iterator(_tree->lastnode())++);
+			}
+			reverse_iterator rbegin()
+			{
+				return (iterator(_tree->lastnode()));
+			}
+			const_reverse_iterator rbegin() const;
+			{
+				return (iterator(_tree->lastnode()));
+			}
+			reverse_iterator rend()
+			{
+				return (iterator(_tree->firstnode()));
+			}
+			const_reverse_iterator rend() const
+			{
+				return (iterator(_tree->firstnode()));
+			}
 
 			// -------------------- Capacity -------------------- //
 			bool empty() const 
@@ -85,10 +107,43 @@ namespace ft
 					this->_base.destroy(this->_ptr + i);
 				this->_size = 0;
 			}
-			// std::pair<iterator, bool> insert( const value_type& value );
-			// iterator insert( iterator hint, const value_type& value );
-			// void erase( iterator pos );
-			// void erase( iterator first, iterator last );
+			std::pair<iterator, bool> insert( const value_type& value );
+			{
+				return ()
+			}
+			iterator insert( iterator hint, const value_type& value )
+			{
+				return (this->tree.insert(val));
+			}
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last)
+			{
+				if ((*first).first > (*last).first)
+					return ;
+				while (first <= last)
+				{
+					this->tree.insert((*first).first);
+					first++;
+				}
+			}
+			void erase( iterator position )
+			{
+				this->tree.delete_node((*position).first);
+			}
+			size_type erase (const key_type& k)
+			{
+				this->tree.delete_node((*position).first);
+			}
+			void erase( iterator first, iterator last )
+			{
+				if ((*first).first > (*last).first)
+					return ;
+				while (first <= last)
+				{
+					this->tree.delete_node((*first).first);
+					first++;
+				}
+			}
 			void swap( map& copy )
 			{
 				pointer tmp;
