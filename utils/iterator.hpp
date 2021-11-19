@@ -10,8 +10,8 @@ namespace ft
 	struct input_iterator_tag {};
 	struct output_iterator_tag {};
 	struct forward_iterator_tag : public input_iterator_tag {};
-	struct Itmap_tag : public forward_iterator_tag {};
-	struct random_acces_iterator_tag : public Itmap_tag {};
+	struct bidirectional_iterator_tag : public forward_iterator_tag {};
+	struct random_acces_iterator_tag : public bidirectional_iterator_tag {};
 
 	template < class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T& >
 	struct iterator
@@ -116,124 +116,124 @@ namespace ft
 	//////////////////// Iterator : Map ///////////////////////
 	///////////////////////////////////////////////////////////
 
-	template < typename T, class Compare >
-	class Itmap
-	{
+	// template < typename T, class Compare >
+	// class Itmap 
+	// {
 
-	    public:
-	        // ------------------- Member types ------------------- //
-	        typedef Iterator                                                    iterator_type;
-	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::iterator_category   iterator_category;
-	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::value_type          value_type;
-	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::difference_type     difference_type;
-	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::pointer             pointer;
-	        typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::reference           reference;
-	        typedef Node*                                                       nodePtr;
+	//     public:
+	//         // ------------------- Member types ------------------- //
+	//         // typedef Iterator                                                    iterator_type;
+	//         typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::iterator_category   iterator_category;
+	//         typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::value_type          value_type;
+	//         typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::difference_type     difference_type;
+	//         typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::pointer             pointer;
+	//         typedef typename ft::iterator_traits<ft::bidirectionnal_iterator_tag, BTree<T> >>::reference           reference;
+	//         typedef Node*                                                       nodePtr;
 
-			Compare		_comp;
-			nodePtr		_node;
-			nodePtr		_lastnode;
+	// 		Compare		_comp;
+	// 		nodePtr		_node;
+	// 		nodePtr		_lastnode;
 
 
-	        Itmap(): current() {}
+	//         Itmap(): current() {}
 			
-	        explicit Itmap(iterator_type x): current(x) {}
+	//         explicit Itmap(iterator_type x): current(x) {}
 			
-	        template < class U >
-	        Itmap(const Itmap<U>& copy): current(copy.current) {}
+	//         template < class U >
+	//         Itmap(const Itmap<U>& copy): current(copy.current) {}
 			
-	        template < class U >
-	        Itmap& operator=(const Itmap<U>& copy)
-	        {
-	            if (this != &copy)
-	                this->current = copy.current;
-	                this->node = copy.node;
-	            return (*this);
-	        }
+	//         template < class U >
+	//         Itmap& operator=(const Itmap<U>& copy)
+	//         {
+	//             if (this != &copy)
+	//                 this->current = copy.current;
+	//                 this->node = copy.node;
+	//             return (*this);
+	//         }
 
-	        // ------------------- Member functions ------------------- //
-	        reference operator*() const { return (node->value); }
-	        pointer operator->() const { return (&this->_node->value); }
-	        iterator_type base() const { return (Iterator(this->current)); }
+	//         // ------------------- Member functions ------------------- //
+	//         reference operator*() const { return (node->value); }
+	//         pointer operator->() const { return (&this->_node->value); }
+	//         iterator_type base() const { return (Iterator(this->current)); }
 
-			Itmap& operator++()
-			{
-				nodePtr cursor = _node;
+	// 		Itmap& operator++()
+	// 		{
+	// 			nodePtr cursor = _node;
 
-				if (_node->right == _lastnode)
-				{
-					cursor = _node->parent;
-					while (cursor != _lastnode
-						&& _comp(cursor->value.first, _node->value.first))
-						cursor = cursor->parent;
-					_node = cursor;
-				}
-				else if (cursor == _lastnode)
-					_node = _lastnode->right;
-				else
-				{
-					cursor = _node->right;
-					if (cursor == _lastnode->parent
-						&& cursor->right == _lastnode)
-						_node = cursor;
-					else
-					{
-						while (cursor->left != _lastnode)
-							cursor = cursor->left;
-					}
-					_node = cursor;
-				}
-				return (*this);
-			}
+	// 			if (_node->right == _lastnode)
+	// 			{
+	// 				cursor = _node->parent;
+	// 				while (cursor != _lastnode
+	// 					&& _comp(cursor->value.first, _node->value.first))
+	// 					cursor = cursor->parent;
+	// 				_node = cursor;
+	// 			}
+	// 			else if (cursor == _lastnode)
+	// 				_node = _lastnode->right;
+	// 			else
+	// 			{
+	// 				cursor = _node->right;
+	// 				if (cursor == _lastnode->parent
+	// 					&& cursor->right == _lastnode)
+	// 					_node = cursor;
+	// 				else
+	// 				{
+	// 					while (cursor->left != _lastnode)
+	// 						cursor = cursor->left;
+	// 				}
+	// 				_node = cursor;
+	// 			}
+	// 			return (*this);
+	// 		}
 
-	        Itmap operator++(int) 
-			{
-				Itmap tmp(*this);
-				operator++();
-				return (tmp);
-			}
+	//         Itmap operator++(int) 
+	// 		{
+	// 			Itmap tmp(*this);
+	// 			operator++();
+	// 			return (tmp);
+	// 		}
 
-	        Itmap& operator--()
-			{
-				nodePtr cursor = _node;
+	//         Itmap& operator--()
+	// 		{
+	// 			nodePtr cursor = _node;
 
-				if (_node->left == _lastnode)
-				{
-					cursor = _node->parent;
-					while (cursor != _lastnode
-						&& !_comp(cursor->value.first, _node->value.first))
-						cursor = cursor->parent;
-					_node = cursor;
-				}
-				else if (cursor == _lastnode)
-					_node = _lastnode->right;
-				else
-				{
-					cursor = _node->left;
-					if (cursor == _lastnode->parent
-						&& cursor->left == _lastnode)
-						_node = cursor;
-					else
-					{
-						while (cursor->right != _lastnode)
-							cursor = cursor->right;
-					}
-					_node = cursor;
-				}
-				return (*this);
-			}
+	// 			if (_node->left == _lastnode)
+	// 			{
+	// 				cursor = _node->parent;
+	// 				while (cursor != _lastnode
+	// 					&& !_comp(cursor->value.first, _node->value.first))
+	// 					cursor = cursor->parent;
+	// 				_node = cursor;
+	// 			}
+	// 			else if (cursor == _lastnode)
+	// 				_node = _lastnode->right;
+	// 			else
+	// 			{
+	// 				cursor = _node->left;
+	// 				if (cursor == _lastnode->parent
+	// 					&& cursor->left == _lastnode)
+	// 					_node = cursor;
+	// 				else
+	// 				{
+	// 					while (cursor->right != _lastnode)
+	// 						cursor = cursor->right;
+	// 				}
+	// 				_node = cursor;
+	// 			}
+	// 			return (*this);
+	// 		}
 
-	        Itmap operator--(int)
-			{
-				Itmap tmp(*this);
-				operator--();
-				return (tmp);
-			}
+	//         Itmap operator--(int)
+	// 		{
+	// 			Itmap tmp(*this);
+	// 			operator--();
+	// 			return (tmp);
+	// 		}
 
-	    protected:
-	        nodePtr    node;
-	        iterator_type current;
-	};
+	//     protected:
+	//         nodePtr    node;
+	//         iterator_type current;
+	// };
 
 	///////////////////////////////////////////////////////////
 	//////////////////// Reverse Iterator /////////////////////
