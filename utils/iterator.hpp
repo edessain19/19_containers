@@ -116,33 +116,32 @@ namespace ft
 	//////////////////// Iterator : Map ///////////////////////
 	///////////////////////////////////////////////////////////
 
-	template < typename T, class Compare >
+	template < typename T, class Compare, typename Node >
 	class Itmap 
 	{
 
 	    public:
-	        // ------------------- Member types ------------------- //
-	        // typedef Iterator                                                    iterator_type;
-	        typedef typename ft::iterator_traits< ft::iterator<ft::bidirectionnal_iterator_tag, T >>::iterator_category   iterator_category;
-	        typedef typename ft::iterator_traits< ft::iterator<ft::bidirectionnal_iterator_tag, T >>::value_type          value_type;
-	        typedef typename ft::iterator_traits< ft::iterator<ft::bidirectionnal_iterator_tag, T >>::difference_type     difference_type;
-	        typedef typename ft::iterator_traits< ft::iterator<ft::bidirectionnal_iterator_tag, T >>::pointer             pointer;
-	        typedef typename ft::iterator_traits< ft::iterator<ft::bidirectionnal_iterator_tag, T >>::reference           reference;
-	        typedef Node*                                                       nodePtr;
+			// ------------------- Member types ------------------- //
+			typedef typename ft::iterator_traits< ft::iterator<T , Compare > >::pointer				pointer;
+			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::reference			reference;
+			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::difference_type		difference_type;
+			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::iterator_category	iterator_category;
+			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::value_type			value_type;
+			typedef Node*                                           						nodePtr;
 
 			Compare		_comp;
 			nodePtr		_node;
 
 
-	        Itmap(): current() {}
+	        // Itmap(): current() {}
+			Itmap(Compare comp, nodePtr node): _comp(comp), _node(node) {}
+			~Itmap() {}
 			
-	        explicit Itmap(iterator_type x): current(x) {}
+	        // explicit Itmap(iterator_category x): current(x) {}
 			
-	        template < class U >
-	        Itmap(const Itmap<U>& copy): current(copy.current) {}
-			
-	        template < class U >
-	        Itmap& operator=(const Itmap<U>& copy)
+	        // Itmap(const Itmap& copy): current(copy.current) {}
+
+	        Itmap& operator=(const Itmap& copy)
 	        {
 	            if (this != &copy)
 	                this->_comp = copy._comp;
@@ -151,19 +150,19 @@ namespace ft
 	        }
 
 	        // ------------------- Member functions ------------------- //
-	        reference operator*() const { return (node->data); }
+	        reference operator*() const { return (_node->data); }
 	        pointer operator->() const { return (&this->_node->data); }
-	        iterator_type base() const { return (Iterator(this->current)); }
+	        iterator_category base() const { return (Iterator(this->current)); }
 
 			Itmap& operator++()
 			{
 				nodePtr cursor = this->_node;
-				nodePtr lastnode = this->node;
+				nodePtr lastnode = this->_node;
 
 				while (lastnode && lastnode->parent != nullptr)
 					lastnode = lastnode->parent;
-				while (lastnode && last->right != nullptr)
-					lastnode = last->right;
+				while (lastnode && lastnode->right != nullptr)
+					lastnode = lastnode->right;
 				if (_node->right == lastnode)
 				{
 					cursor = _node->parent;
@@ -200,12 +199,12 @@ namespace ft
 	        Itmap& operator--()
 			{
 				nodePtr cursor = _node;
-				node_pointer lastnode = this->root;
+				nodePtr lastnode = this->root;
 
 				while (lastnode && lastnode->parent != nullptr)
 					lastnode = lastnode->parent;
-				while (lastnode && last->right != nullptr)
-					lastnode = last->right;
+				while (lastnode && lastnode->right != nullptr)
+					lastnode = lastnode->right;
 
 				if (_node->left == lastnode)
 				{

@@ -23,49 +23,42 @@ namespace ft
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
 	class map
 	{
-		private:
-			Alloc   _base;
-			T*      _ptr;
-			size_t  _size;
-			size_t  _capacity;
-			BTree<Key, T, ft::pair< const Key, T > > _tree;
-
 		public:
-			typedef										Key key_type;
-			typedef 									T mapped_type;
-			typedef typename ft::pair<const Key, T> 	value_type;
-			typedef size_t 								size_type;
-			typedef ptrdiff_t 							difference_type;
-			typedef Compare 							key_compare;
-			typedef Alloc 								allocator_type;
-			typedef value_type& 						reference;
-			typedef const value_type& 					const_reference;
-			typedef typename Alloc::pointer 			pointer;
-			typedef typename Alloc::const_pointer 		const_pointer;
-			// typedef iterator	LegacyBidirectionalIterator to value_type;
-			// typedef const_iterator	LegacyBidirectionalIterator to const value_type;
-			// typedef ft::reverse_iterator<iterator> reverse_iterator;
-			// typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+			typedef	Key 													key_type;
+			typedef	T														mapped_type;
+			typedef typename ft::pair<const Key, T>							value_type;
+			typedef size_t 													size_type;
+			typedef ptrdiff_t 												difference_type;
+			typedef Compare 												key_compare;
+			typedef Alloc 													allocator_type;
+			typedef ft::Itmap< mapped_type, key_compare, Node<value_type> >	iterator;
+			typedef ft::Itmap< const mapped_type, const key_compare, const Node<value_type> >	const_iterator;
+			typedef typename Alloc::pointer 								pointer;
+			typedef typename Alloc::const_pointer 							const_pointer;
+			typedef ft::reverse_iterator<iterator> 							reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator> 					const_reverse_iterator;
+			typedef	ft::Node<T>												Node;			
+			
+			// typedef iterator LegacyBidirectionalIterator to value_type;
+			// typedef const_iterator LegacyBidirectionalIterator to const value_type;
 
-			class value_compare : 
+			class value_compare
 			{
 				protected:
-					Compare comp;
-					value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
+					Compare _comp;
+					value_compare (Compare c) : _comp(c) {}
 
 				public:
-					/*Member typed*/
 					typedef bool result_type;
 					typedef value_type first_argument_type;
 					typedef value_type second_argument_type;
 
-					/*Member function*/
-					bool operator() (const value_type& x, const value_type& y) const { return comp(x.first, y.first); }
+					bool operator() (const value_type& x, const value_type& y) const { return _comp(x.first, y.first); }
 			};
 
 			// explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
-			// template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+			template <class InputIterator>
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc)
 			{
 				while (first <= last)
 					_tree.insert(*first);
@@ -97,7 +90,7 @@ namespace ft
 			{
 				return (iterator(_tree->lastnode()));
 			}
-			const_reverse_iterator rbegin() const;
+			const_reverse_iterator rbegin() const
 			{
 				return (iterator(_tree->lastnode()));
 			}
@@ -118,7 +111,7 @@ namespace ft
 				return (false);
 			}
 			size_type size() const { return (_tree.getSize()); }
-			size_type max_size() const { return (tree.getMaxSize()); }
+			size_type max_size() const { return (_tree.getCapacity()); }
 			
 			// -------------------- Modifiers -------------------- //
 			void clear()
@@ -129,9 +122,10 @@ namespace ft
 			// {
 			// 	return ()
 			// }
-			iterator insert( iterator hint, const value_type& value )
+			iterator insert( iterator position, const value_type& value )
 			{
-				return (_tree.insert(val));
+				position = nullptr;
+				return (_tree.insert(value));
 			}
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last)
@@ -183,19 +177,19 @@ namespace ft
 			// -------------------- Lookup -------------------- //
 			size_type count( const Key& key ) const
 			{
-				if (_tree.search(k) == nullptr)
+				if (_tree.search(key) == nullptr)
 					return (0);
 				return (1);
 			}
-			iterator find( const Key& key ) { return (iterator(_tree.search(k))); }
-			const_iterator find( const Key& key ) const { return (iterator(_tree.search(k))); }
+			iterator find( const Key& key ) { return (iterator(_tree.search(key))); }
+			const_iterator find( const Key& key ) const { return (iterator(_tree.search(key))); }
 			// std::pair<iterator,iterator> equal_range( const Key& key );
 			// std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
 			iterator lower_bound( const Key& key )
 			{
 				iterator it = this->begin();
 
-				while ((*it).first <= k)
+				while ((*it).first <= key)
 					it++;
 				return (it);
 			}
@@ -203,15 +197,15 @@ namespace ft
 			{
 				iterator it = this->begin();
 
-				while ((*it).first <= k)
+				while ((*it).first <= key)
 					it++;
 				return (it);
 			}
-			iterator upper_bound (const key_type& k)
+			iterator upper_bound (const key_type& key)
 			{
 				iterator it = this->begin();
 
-				while ((*it).first > k)
+				while ((*it).first > key)
 					it++;
 				return (it);
 			}
@@ -227,14 +221,21 @@ namespace ft
 			// -------------------- Observers -------------------- //
 			key_compare key_comp() const
 			{
-				return (_comp);
+				return (key_compare());
 			}
-			std::map::value_compare value_comp() const
+			value_compare value_comp() const
 			{
 				return (value_compare());
 			}
 
 			allocator_type get_allocator() const { return (this->_base); }
+
+		private:
+			Alloc   _base;
+			T*      _ptr;
+			size_t  _size;
+			size_t  _capacity;
+			BTree<Key, T, ft::pair< const Key, T > > _tree;
 	};
 
 	// -------------------- Non Member function -------------------- //

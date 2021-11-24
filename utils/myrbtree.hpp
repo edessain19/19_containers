@@ -1,7 +1,8 @@
-#ifndef BTREE_HPP
-# define BTREE_HPP
+#ifndef BTree_HPP
+# define BTree_HPP
 
 # include "utils.hpp"
+# include <iostream>
 # include <memory>
 
 namespace ft
@@ -18,23 +19,40 @@ namespace ft
 		int         color;
 	};
 
-    template < class Key, class Value, class T = ft::pair< Key, Value >, class Node = ft::Node<T>, class Node_Alloc = std::allocator<Node> >
+	template < class Key, class Value, class T = ft::pair< Key, Value >, class Node = ft::Node<T>, class Node_Alloc = std::allocator<Node> >     /// Faire un rebind d'allocator
 	class BTree
 	{
+		private:
+			Node*	_root;
+			size_t	_size;
+
 		public:
 			typedef Key								key_type;
 			typedef T                               value_type;
 			typedef Node                            node_type;
 			typedef Node*                           node_pointer;
-			// typedef Compare                         key_compare;
-			typedef Node_Alloc                      node_alloc;
-			typedef typename node_alloc::pointer    pointer;
+			typedef Node_Alloc						node_alloc;
+			typedef typename node_alloc::pointer    node_alloc_pointer;
 
+			BTree(): _root(nullptr), _size(0) {}
+			~BTree()
+			{
+				this->clear_all();
+			}
+
+			node_pointer minimum(node_pointer node)
+			{
+				while (node->left != nullptr)
+				{
+					node = node->left;
+				}
+				return (node);
+			}
 			void rbTransplant(node_pointer u, node_pointer v)
 			{
 				if (u->parent == nullptr)
 				{
-					root = v;
+					_root = v;
 				}
 				else if (u == u->parent->left)
 				{
@@ -58,7 +76,7 @@ namespace ft
 				y->parent = x->parent;
 				if (x->parent == nullptr)
 				{
-					this->root = y;
+					this->_root = y;
 				} 
 				else if (x == x->parent->right)
 				{
@@ -83,7 +101,7 @@ namespace ft
 				y->parent = x->parent;
 				if (x->parent == nullptr)
 				{
-					this->root = y;
+					this->_root = y;
 				} 
 				else if (x == x->parent->left)
 				{
@@ -100,7 +118,7 @@ namespace ft
 			void fixDelete(node_pointer x)
 			{
 				node_pointer s;
-				while (x != root && x->color == 0)
+				while (x != _root && x->color == 0)
 				{
 					if (x == x->parent->left)
 					{
@@ -136,7 +154,7 @@ namespace ft
 							x->parent->color = 0;
 							s->right->color = 0;
 							leftRotate(x->parent);
-							x = root;
+							x = _root;
 						}
 					}
 					else
@@ -173,7 +191,7 @@ namespace ft
 							x->parent->color = 0;
 							s->left->color = 0;
 							rightRotate(x->parent);
-							x = root;
+							x = _root;
 						}
 					} 
 				}
@@ -183,7 +201,7 @@ namespace ft
 			node_pointer insert(const value_type& val)
 			{
 				/*Insert*/
-				node_pointer tmp = this->root;
+				node_pointer tmp = this->_root;
 				node_pointer parent = nullptr;
 
 				while (tmp)
@@ -197,16 +215,18 @@ namespace ft
 				if (parent && (val.first == parent->data.first))
 					return (nullptr);
 				node_pointer toInsert = node_alloc().allocate(1);
+				node_alloc().construct(toInsert, node_type());
 				toInsert->data.first = val.first;
 				toInsert->data.second = val.second;
 				toInsert->parent = parent;
 				toInsert->left = nullptr;
 				toInsert->right = nullptr;
 				toInsert->color = 1;
-				if (!this->root)
+				_size++;
+				if (!this->_root)
 				{
 					toInsert->color = 0;
-					this->root = toInsert;
+					this->_root = toInsert;
 					return (toInsert);
 				}
 				else if (toInsert->data.first < parent->data.first)
@@ -221,7 +241,7 @@ namespace ft
 				{
 					if (toInsert->parent == toInsert->parent->parent->right)
 					{
-						tmp = toInsert->parent->parent->left; // uncle
+						tmp = toInsert->parent->parent->left;
 						if (tmp->color == 1)
 						{
 							// case 3.1
@@ -269,42 +289,35 @@ namespace ft
 							rightRotate(toInsert->parent->parent);
 						}
 					}
-					if (toInsert == root)
+					if (toInsert == _root)
 					{
 						break;
 					}
 				}
-				this->root->color = 0;
+				this->_root->color = 0;
 				return (toInsert);
 			}
 
-			void delete_node(node_pointer node, int key)
+			void delete_node(int key)
 			{
 				// find the node containing key
 				node_pointer z = nullptr;
 				node_pointer x, y;
+				node_pointer node = this->_root;
 				while (node != nullptr)
 				{
 					if (node->data == key)
-					{
 						z = node;
-					}
 					if (node->data <= key)
-					{
 						node = node->right;
-					}
 					else
-					{
 						node = node->left;
-					}
 				}
-
 				if (z == nullptr)
 				{
 					std::cout << "Couldn't find key in the tree" << std::endl;
 					return;
 				}
-
 				y = z;
 				int y_original_color = y->color;
 				if (z->left == nullptr)
@@ -338,36 +351,33 @@ namespace ft
 					y->left->parent = y;
 					y->color = z->color;
 				}
-				delete z;
+				_size--;
+				node_alloc().destroy(*z);
+				node_alloc().deallocate(z, 1);
+				z = nullptr;
 				if (y_original_color == 0)
-				{
 					fixDelete(x);
-				}
 			}
 
 			node_pointer search(const key_type& key)
 			{
-				node_pointer tmp = this->root;
+				node_pointer tmp = this->_root;
 
 				while (tmp)
 				{
 					if (tmp->data.first == key)
 						return (tmp);
 					else if (key < tmp->data.first)
-					{
 						tmp = tmp->left;
-					}
 					else
-					{
 						tmp = tmp->right;
-					}   
 				}
 				return (nullptr);
 			}
 
 			node_pointer lastNode()
 			{
-				node_pointer last = this->root;
+				node_pointer last = this->_root;
 
 				while (last && last->right != nullptr)
 					last = last->right;
@@ -376,15 +386,33 @@ namespace ft
 
 			node_pointer firstNode()
 			{
-				node_pointer first = this->root;
+				node_pointer first = this->_root;
 
 				while (first && first->left != nullptr)
 					first = first->left;
 				return (first);
 			}
 
-		private:
-			node_pointer root;
+			void clear(node_pointer node)
+			{
+				if (node == nullptr)
+					return ;
+				clear(node->left);
+				clear(node->right);
+				// std::cout << "\n Deleting node: " << node->data;
+				node_alloc().destroy(*node);
+				node_alloc().deallocate(node, 1);
+				node = nullptr;
+			}
+
+			void clear_all()
+			{
+				clear(_root);
+			}
+
+			size_t getSize() { return (this->_size); }
+			size_t getCapacity() { return (node_alloc().max_size()); }
+			node_pointer getRoot() { return (_root); }
 	};
 }
 
