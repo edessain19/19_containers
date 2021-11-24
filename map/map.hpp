@@ -118,9 +118,29 @@ namespace ft
 			{
 				_tree.clear_all();
 			}
-			// std::pair<iterator, bool> insert( const value_type& value );
+			// ft::pair<iterator, bool> insert( const value_type& value );
 			// {
-			// 	return ()
+			// 	node_ptr x = _begin();
+			// 	node_ptr y = _end();
+			// 	bool side = true;
+				
+			// 	while (x != 0)
+			// 	{
+			// 		y = x;
+			// 		side = _attr.key_comp(_key(v), _key(x));
+			// 		x = side ? x->left : x->right;
+			// 	}
+			// 	iterator j = iterator(y);
+			// 	if (side)
+			// 	{
+			// 		if (j == begin())
+			// 			return ft::make_pair<iterator, bool>(insert(x, y, v), true);
+			// 		else
+			// 			--j;
+			// 	}
+			// 	if (_attr.key_comp(_key(j.current()), _key(v)))
+			// 		return ft::make_pair<iterator, bool>(insert(x, y, v), true);
+			// 	return ft::make_pair<iterator, bool>(j, false);
 			// }
 			iterator insert( iterator position, const value_type& value )
 			{
@@ -157,22 +177,7 @@ namespace ft
 					first++;
 				}
 			}
-			// void swap( map& copy )
-			// {
-			// 	pointer tmp;
-			// 	size_t  tmp2;
-			// 	size_t  tmp3;
-
-			// 	tmp = this->_ptr;
-			// 	tmp2 = this->_size;
-			// 	tmp3 = this->capacity;
-			// 	this->_ptr = copy._ptr;
-			// 	this->_size = copy._size;
-			// 	this->capacity = copy.capacity;
-			// 	copy._ptr = tmp;
-			// 	copy._size = tmp2;
-			// 	copy._capacity = tmp3;
-			// }
+			void swap( map& copy ) { _tree.swap(copy._tree); }
 
 			// -------------------- Lookup -------------------- //
 			size_type count( const Key& key ) const
@@ -183,8 +188,8 @@ namespace ft
 			}
 			iterator find( const Key& key ) { return (iterator(_tree.search(key))); }
 			const_iterator find( const Key& key ) const { return (iterator(_tree.search(key))); }
-			// std::pair<iterator,iterator> equal_range( const Key& key );
-			// std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
+			// ft::pair<iterator,iterator> equal_range( const Key& key );
+			// ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
 			iterator lower_bound( const Key& key )
 			{
 				iterator it = this->begin();
