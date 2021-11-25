@@ -10,34 +10,25 @@
 
 namespace ft
 {
-	// template <class T1, class T2>
-	// struct pair
-	// {
-	// 	typedef T1 first_type;
-	// 	typedef T2 second_type;
 
-	// 	T1 first;
-	// 	T2 second;
-	// };
-	
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
 	class map
 	{
 		public:
-			typedef	Key 													key_type;
-			typedef	T														mapped_type;
-			typedef typename ft::pair<const Key, T>							value_type;
-			typedef size_t 													size_type;
-			typedef ptrdiff_t 												difference_type;
-			typedef Compare 												key_compare;
-			typedef Alloc 													allocator_type;
-			typedef ft::Itmap< mapped_type, key_compare, Node<value_type> >	iterator;
+			typedef	Key 																		key_type;
+			typedef	T																			mapped_type;
+			typedef typename ft::pair<const Key, T>												value_type;
+			typedef size_t 																		size_type;
+			typedef ptrdiff_t 																	difference_type;
+			typedef Compare 																	key_compare;
+			typedef Alloc 																		allocator_type;
+			typedef ft::Itmap< mapped_type, key_compare, Node<value_type> >						iterator;
 			typedef ft::Itmap< const mapped_type, const key_compare, const Node<value_type> >	const_iterator;
-			typedef typename Alloc::pointer 								pointer;
-			typedef typename Alloc::const_pointer 							const_pointer;
-			typedef ft::reverse_iterator<iterator> 							reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator> 					const_reverse_iterator;
-			typedef	ft::Node<T>												Node;			
+			typedef typename Alloc::pointer 													pointer;
+			typedef typename Alloc::const_pointer 												const_pointer;
+			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator> 										const_reverse_iterator;
+			typedef	ft::Node<T>																	Node;
 			
 			// typedef iterator LegacyBidirectionalIterator to value_type;
 			// typedef const_iterator LegacyBidirectionalIterator to const value_type;
@@ -56,16 +47,21 @@ namespace ft
 					bool operator() (const value_type& x, const value_type& y) const { return _comp(x.first, y.first); }
 			};
 
-			// explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc) {}
+			
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc)
 			{
 				while (first <= last)
 					_tree.insert(*first);
 			}
-			// map (const map& x);
+			
+			// map (const map& x)
+			// {
+			// 	*this = x;
+			// }
 
-			// ~map() 
+			~map() { clear(); }
 			
 			// map& operator= (const map& x);
 
@@ -106,7 +102,7 @@ namespace ft
 			// -------------------- Capacity -------------------- //
 			bool empty() const 
 			{
-				if (this->_size == 0)
+				if (_tree->getSize() == 0)
 					return (true);
 				return (false);
 			}
@@ -118,35 +114,23 @@ namespace ft
 			{
 				_tree.clear_all();
 			}
-			// ft::pair<iterator, bool> insert( const value_type& value );
-			// {
-			// 	node_ptr x = _begin();
-			// 	node_ptr y = _end();
-			// 	bool side = true;
-				
-			// 	while (x != 0)
-			// 	{
-			// 		y = x;
-			// 		side = _attr.key_comp(_key(v), _key(x));
-			// 		x = side ? x->left : x->right;
-			// 	}
-			// 	iterator j = iterator(y);
-			// 	if (side)
-			// 	{
-			// 		if (j == begin())
-			// 			return ft::make_pair<iterator, bool>(insert(x, y, v), true);
-			// 		else
-			// 			--j;
-			// 	}
-			// 	if (_attr.key_comp(_key(j.current()), _key(v)))
-			// 		return ft::make_pair<iterator, bool>(insert(x, y, v), true);
-			// 	return ft::make_pair<iterator, bool>(j, false);
-			// }
+
+			ft::pair<iterator, bool> insert( const value_type& value )
+			{
+				iterator it = find(value.first);
+
+				if (it != end() && _tree.getSize() != 0)
+					return ft::pair<iterator, bool>(iterator(it), false);
+				insertNode(value);
+				return ft::pair<iterator, bool>(iterator(value), true);
+			}
+
 			iterator insert( iterator position, const value_type& value )
 			{
 				position = nullptr;
 				return (_tree.insert(value));
 			}
+
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last)
 			{
@@ -188,8 +172,33 @@ namespace ft
 			}
 			iterator find( const Key& key ) { return (iterator(_tree.search(key))); }
 			const_iterator find( const Key& key ) const { return (iterator(_tree.search(key))); }
-			// ft::pair<iterator,iterator> equal_range( const Key& key );
-			// ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
+			//////////////////////////////
+			ft::pair<iterator,iterator> equal_range( const Key& key );
+			{
+				for (iterator it = this->begin(), it != this->end() && !_comp(key, (*it).first); it++)
+				{
+					if (!_comp((*it).first, k) && !_comp(key, (*it).first))
+					{
+						iterator it2 = it++;
+						return ft::pair<iterator,iterator>(it2, it);
+					}
+				}
+				return ft::pair<iterator,iterator>(it, it);
+			}
+
+			ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
+			{
+				for (const_iterator it = this->begin(), it != this->end() && !_comp(key, (*it).first); it++)
+				{
+					if (!_comp((*it).first, k) && !_comp(key, (*it).first))
+					{
+						const_iterator it2 = it++;
+						return ft::pair<const_iterator,const_iterator>(it2, it);
+					}
+				}
+				return ft::pair<const_iterator,const_iterator>(it, it);
+			}
+			/////////////////////////////////////
 			iterator lower_bound( const Key& key )
 			{
 				iterator it = this->begin();
