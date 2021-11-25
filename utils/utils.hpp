@@ -94,11 +94,24 @@ namespace ft
 
 		T1 first;
 		T2 second;
+
+		pair() {}
+		template<class U, class V>
+		pair (const pair<U,V>& pr): first(pr.first), second(pr.second) {}
+		pair (const first_type& a, const second_type& b): first(a), second(b) {}
+	};
+
+	template < class Arg1, class Arg2, class Result >
+	struct binary_function
+	{
+		typedef Arg1    first_argument_type;
+		typedef Arg2    second_argument_type;
+		typedef Result  result_type;
 	};
 
 	/*less*/
 	template< class T >
-	struct less
+	struct less : binary_function <T, T, bool>
 	{
 		typedef bool	result_type;
 		typedef T		first_argument_type;
