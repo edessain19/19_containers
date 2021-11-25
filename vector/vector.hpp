@@ -99,16 +99,24 @@ namespace ft
 			size_type max_size() const { return (this->_base.max_size()); }
 			void resize (size_type n, value_type val = value_type())
 			{
-				if (n > this->_size)
+				if (n < this->_size)
 				{
-					this->reserve(n);
+					for (size_t i = n; i < this->_size; i++)
+						this->_base.destroy(this->_ptr + i);
+				}
+				else if (n > this->_size && n <= this->_capacity)
+				{
 					for (size_t i = this->_size; i < n; i++)
 						this->_base.construct(this->_ptr + i, val);
 				}
-				else if (n < this->_size)
+				else if (n > this->_size && n > this->_capacity)
 				{
+					if (n < this->_capacity * 2)
+						reserve(this->_capacity * 2);
+					else
+						reserve(n);
 					for (size_t i = this->_size; i < n; i++)
-						this->_base.destroy(this->_ptr + i);
+						this->_base.construct(this->_ptr + i, val);
 				}
 				this->_size = n;
 			}
@@ -171,7 +179,7 @@ namespace ft
 			}
 			void assign (size_type n, const value_type& val)
 			{
-				this->clear();
+				clear();
 				for (size_t i = 0; i < n; i++)
 					push_back(val);
 			}
@@ -194,8 +202,8 @@ namespace ft
 				for (it = this->begin(); it < position; it++)
 					i++;
 				this->reserve(this->_size + 1);
+				i = this->_size;
 				this->_size += 1;
-				i = this->_size - 1;
 				while (j > i)
 				{
 					this->_ptr[j] = this->_ptr[j - 1];
@@ -216,12 +224,13 @@ namespace ft
 			template <class InputIterator>
 			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = nullptr)
 			{
-				iterator it = position;
-
-				for (; first < last; first++)
+				iterator	pos = position;
+				vector		tmp(first, last);
+				
+				for (iterator it = tmp.begin(); it < tmp.end(); it++)
 				{
-					it = insert(it, *first);
-					it++;
+					pos = insert(pos, *it);
+					pos++;
 				}
 			}
 
@@ -289,7 +298,14 @@ namespace ft
 	template< class T, class Alloc >
 	bool operator==(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{
-		return (ft::equal ( lhs.begin(), lhs.end(), rhs.begin() ));
+		if (lhs.size() != rhs.size())
+			return false;
+		for (size_t a = 0; a < lhs.size(); a++)
+		{
+			if (lhs[a] != rhs[a])
+				return false;
+		}
+		return true;
 	}
 	template <class T, class Alloc>
 	bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (!(lhs == rhs)); }
