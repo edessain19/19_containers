@@ -400,7 +400,7 @@ namespace ft
 				clear(node->left);
 				clear(node->right);
 				// std::cout << "\n Deleting node: " << node->data;
-				node_alloc().destroy(*node);
+				node_alloc().destroy(node);
 				node_alloc().deallocate(node, 1);
 				node = nullptr;
 			}

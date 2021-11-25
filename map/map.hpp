@@ -47,13 +47,16 @@ namespace ft
 					bool operator() (const value_type& x, const value_type& y) const { return _comp(x.first, y.first); }
 			};
 
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc) {}
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : 
+			_comp(comp), _base(alloc), _size(0), _tree() {}
 			
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc)
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :
+			_comp(comp), _base(alloc), _tree()
 			{
 				while (first <= last)
 					_tree.insert(*first);
+				_size = _tree->_size;
 			}
 			
 			// map (const map& x)
@@ -173,11 +176,13 @@ namespace ft
 			iterator find( const Key& key ) { return (iterator(_tree.search(key))); }
 			const_iterator find( const Key& key ) const { return (iterator(_tree.search(key))); }
 			//////////////////////////////
-			ft::pair<iterator,iterator> equal_range( const Key& key );
+			ft::pair<iterator,iterator> equal_range( const Key& key )
 			{
-				for (iterator it = this->begin(), it != this->end() && !_comp(key, (*it).first); it++)
+				iterator it = this->begin();
+				
+				for (; it != this->end() && !_comp(key, (*it).first); it++)
 				{
-					if (!_comp((*it).first, k) && !_comp(key, (*it).first))
+					if (!_comp((*it).first, key) && !_comp(key, (*it).first))
 					{
 						iterator it2 = it++;
 						return ft::pair<iterator,iterator>(it2, it);
@@ -186,11 +191,13 @@ namespace ft
 				return ft::pair<iterator,iterator>(it, it);
 			}
 
-			ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
+			ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
 			{
-				for (const_iterator it = this->begin(), it != this->end() && !_comp(key, (*it).first); it++)
+				const_iterator it = this->begin();
+				
+				for (; it != this->end() && !_comp(key (*it).first); it++)
 				{
-					if (!_comp((*it).first, k) && !_comp(key, (*it).first))
+					if (!_comp((*it).first, key) && !_comp(key, (*it).first))
 					{
 						const_iterator it2 = it++;
 						return ft::pair<const_iterator,const_iterator>(it2, it);
@@ -245,6 +252,7 @@ namespace ft
 			allocator_type get_allocator() const { return (this->_base); }
 
 		private:
+			key_compare _comp;
 			Alloc   _base;
 			T*      _ptr;
 			size_t  _size;
