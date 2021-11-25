@@ -85,6 +85,7 @@ namespace ft
     template<> struct is_integral<const unsigned long int> : public ft::integral_constant<bool, true> {};
     template<> struct is_integral<const unsigned long long int> : public ft::integral_constant<bool, true> {};
 
+
 	/*pair*/
 	template <class T1, class T2>
 	struct pair
@@ -92,14 +93,44 @@ namespace ft
 		typedef T1 first_type;
 		typedef T2 second_type;
 
-		T1 first;
-		T2 second;
+		first_type first;
+		second_type second;
 
-		pair() {}
+		pair() : first(), second() {}
 		template<class U, class V>
-		pair (const pair<U,V>& pr): first(pr.first), second(pr.second) {}
+		pair (pair<U,V>& pr): first(pr.first), second(pr.second) {}
+		// pair (first_type& a, second_type& b): first(a), second(b) {}
 		pair (const first_type& a, const second_type& b): first(a), second(b) {}
+
+		pair& operator= (const pair& pr)
+		{
+			if (*this == pr)
+				return (*this);
+			this->first = pr.first;
+			this->second = pr.second;
+			return (*this);
+		}
 	};
+
+	template <class T1, class T2>
+	ft::pair<T1,T2> make_pair(T1 x, T2 y)
+	{
+		return (ft::pair<T1, T2>(x, y));
+	}
+
+	template <class T1, class T2>
+	bool operator== (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs) { return (lhs.first == rhs.first && lhs.second == rhs.second); }
+	template <class T1, class T2>
+	bool operator!= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs) { return !(lhs == rhs); }
+	template <class T1, class T2>
+	bool operator<  (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs) { return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second)); }
+	template <class T1, class T2>
+	bool operator<= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs) { return !(rhs < lhs); }
+	template <class T1, class T2>
+	bool operator>  (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs) { return (rhs < lhs); }
+	template <class T1, class T2>
+	bool operator>= (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs) { return !(lhs < rhs); }
+
 
 	template < class Arg1, class Arg2, class Result >
 	struct binary_function
@@ -119,7 +150,7 @@ namespace ft
 
 		bool operator()(const T &lhs, const T &rhs) const
 		{
-			return lhs < rhs; // assumes that the implementation uses a flat address space
+			return lhs < rhs;
 		}
 	};
 

@@ -71,35 +71,35 @@ namespace ft
 			// // -------------------- Iterator -------------------- //
 			iterator begin()
 			{
-				return (iterator(_tree->firstnode()));
+				return (iterator(_tree.firstNode()));
 			}
 			const_iterator begin() const
 			{
-				return (iterator(_tree->firstnode()));
+				return (iterator(_tree.firstNode()));
 			}
 			iterator end()
 			{
-				return (iterator(_tree->lastnode())++);
+				return (iterator(_tree.lastNode())++);
 			}
 			const_iterator end() const
 			{
-				return (iterator(_tree->lastnode())++);
+				return (iterator(_tree.lastNode())++);
 			}
 			reverse_iterator rbegin()
 			{
-				return (iterator(_tree->lastnode()));
+				return (iterator(_tree.lastNode()));
 			}
 			const_reverse_iterator rbegin() const
 			{
-				return (iterator(_tree->lastnode()));
+				return (iterator(_tree.lastNode()));
 			}
 			reverse_iterator rend()
 			{
-				return (iterator(_tree->firstnode()));
+				return (iterator(_tree.firstNode()));
 			}
 			const_reverse_iterator rend() const
 			{
-				return (iterator(_tree->firstnode()));
+				return (iterator(_tree.firstNode()));
 			}
 
 			// -------------------- Capacity -------------------- //
@@ -124,7 +124,7 @@ namespace ft
 
 				if (it != end() && _tree.getSize() != 0)
 					return ft::pair<iterator, bool>(iterator(it), false);
-				insertNode(value);
+				_tree.insert(value);
 				return ft::pair<iterator, bool>(iterator(value), true);
 			}
 
