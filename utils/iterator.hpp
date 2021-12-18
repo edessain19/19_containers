@@ -140,69 +140,68 @@ template < class T >
 	template < typename T, class Compare, typename Node >
 	class Itmap 
 	{
-
+		private :
+			node_pointer 	_node;
+			node_pointer	_end;
 		public:
 			// ------------------- Member types ------------------- //
-			typedef typename ft::iterator_traits< ft::iterator<T , Compare > >::pointer				pointer;
-			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::reference			reference;
-			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::difference_type		difference_type;
-			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::iterator_category	iterator_category;
-			typedef typename ft::iterator_traits< ft::iterator<T , Compare> >::value_type			value_type;
-			typedef Node*                                           						nodePtr;
+			typedef typename ft::iterator_traits< ft::iterator<ft::bidirectional_iterator_tag, T> >::iterator_category		iterator_category;
+            typedef typename ft::iterator_traits< ft::iterator<ft::bidirectional_iterator_tag, T> >::value_type				value_type;
+            typedef typename ft::iterator_traits< ft::iterator<ft::bidirectional_iterator_tag, T> >::difference_type		difference_type;
+            typedef typename ft::iterator_traits< ft::iterator<ft::bidirectional_iterator_tag, T> >::pointer				pointer;
+            typedef typename ft::iterator_traits< ft::iterator<ft::bidirectional_iterator_tag, T> >::reference				reference;
+            typedef ft::Node<T>																								node_reference;
+            typedef ft::Node<T>*																							node_pointer;
+			// Compare		_comp;
+			// nodePtr		_node;
 
-			Compare		_comp;
-			nodePtr		_node;
 
-
-			// Itmap(): current() {}
-			Itmap(Compare comp, nodePtr node): _comp(comp), _node(node) {}
+			Itmap(): _node(u_nullptr), _end(u_nullptr) {}
+			Itmap(node_pointer node, node_pointer end ): _node(node), _end(end) {}
+			template < class U >
+			Itmap(const Itmap<U>& cpy): _node(cpy._node), _end(cpy._end) {}
 			~Itmap() {}
-			
-			// explicit Itmap(iterator_category x): current(x) {}
-			
-			// Itmap(const Itmap& copy): current(copy.current) {}
-
-			Itmap& operator=(const Itmap& copy)
+			template < class U >
+			Itmap& operator=(const Itmap<U>& copy)
 			{
 				if (this != &copy)
-					this->_comp = copy._comp;
+				{
 					this->_node = copy._node;
+					this->_end = copy._end;
+					this->_comp = copy._comp;
+				}
 				return (*this);
 			}
 
 			// ------------------- Member functions ------------------- //
-			reference operator*() const { return (_node->data); }
+			reference operator*() const { return (this->_node->data); }
 			pointer operator->() const { return (&this->_node->data); }
-			iterator_category base() const { return (Iterator(this->current)); }
+			node_pointer base() const { return (this->_node); }
 
 			Itmap& operator++()
 			{
-				nodePtr cursor = this->_node;
-				nodePtr lastnode = this->_node;
+				node_pointer cursor = _node;
 
-				while (lastnode && lastnode->parent != nullptr)
-					lastnode = lastnode->parent;
-				while (lastnode && lastnode->right != nullptr)
-					lastnode = lastnode->right;
-				if (_node->right == lastnode)
+				if (_node->right == _end)
 				{
 					cursor = _node->parent;
-					while (cursor != lastnode
-						&& _comp(cursor->data.first, _node->data.first))
+					while (cursor != u_nullptr && cursor != _end && cursor->data.first < _node->data.first)
 						cursor = cursor->parent;
-					_node = cursor;
+					if (cursor == 0)
+						_node = _end;
+					else
+						_node = cursor;
 				}
-				else if (cursor == lastnode)
-					_node = lastnode->right;
+				else if (cursor == _end)
+					_node = _end;
 				else
 				{
 					cursor = _node->right;
-					if (cursor == lastnode->parent
-						&& cursor->right == lastnode)
+					if (cursor == _end->parent && cursor->right == _end)
 						_node = cursor;
 					else
 					{
-						while (cursor->left != lastnode)
+						while (cursor->left != _end)
 							cursor = cursor->left;
 					}
 					_node = cursor;
@@ -219,38 +218,34 @@ template < class T >
 
 			Itmap& operator--()
 			{
-				nodePtr cursor = _node;
-				nodePtr lastnode = this->root;
+				node_pointer cursor = _node;
 
-				while (lastnode && lastnode->parent != nullptr)
-					lastnode = lastnode->parent;
-				while (lastnode && lastnode->right != nullptr)
-					lastnode = lastnode->right;
-
-				if (_node->left == lastnode)
+				if (_node->left == _end)
 				{
 					cursor = _node->parent;
-					while (cursor != lastnode
-						&& !_comp(cursor->data.first, _node->data.first))
+					while (cursor != u_nullptr && cursor != _end && cursor->data.first > _node->data.first)
 						cursor = cursor->parent;
 					_node = cursor;
+					if (cursor == 0)
+						_node = _end->right;
+					else
+						_node = cursor;
 				}
-				else if (cursor == lastnode)
-					_node = lastnode->right;
+				else if (cursor == _end)
+					_node = _end->right;
 				else
 				{
 					cursor = _node->left;
-					if (cursor == lastnode->parent
-						&& cursor->left == lastnode)
+					if (cursor == _end->parent && cursor->left == _end)
 						_node = cursor;
 					else
 					{
-						while (cursor->right != lastnode)
+						while (cursor->right != _end)
 							cursor = cursor->right;
 					}
 					_node = cursor;
 				}
-				return (*this);
+				return (*this); 
 			}
 
 			Itmap operator--(int)
@@ -260,6 +255,16 @@ template < class T >
 				return (tmp);
 			}
 	};
+	//------------------- Itmap : non-member functions -------------------//
+	template < class T >
+	bool operator==(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.base() == rhs.base()); }
+	template < class T, class T2 >
+	bool operator==(const ft::Itmap<T>& lhs, const ft::Itmap<T2>& rhs) { return (lhs.base() == rhs.base()); }
+	template < class T >
+	bool operator!=(const ft::Itmap<T>& lhs, const ft::Itmap<T>& rhs) { return (lhs.base() != rhs.base()); }
+	template < class T, class T2 >
+	bool operator!=(const ft::Itmap<T>& lhs, const ft::Itmap<T2>& rhs) { return (lhs.base() != rhs.base()); }
+
 
 	///////////////////////////////////////////////////////////
 	//////////////////// Reverse Iterator /////////////////////
