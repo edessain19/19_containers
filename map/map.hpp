@@ -11,7 +11,6 @@
 
 namespace ft
 {
-
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map
 	{
@@ -33,21 +32,19 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 			typedef typename allocator_type::template rebind< Node<value_type> >::other	node_allocator;
 
-
-			class value_compare
+			class value_compare : ft::binary_function<value_type, value_type, bool>
 			{
 				friend class map<key_type, mapped_type, key_compare, allocator_type>;
-				
+
 				protected:
-					Compare _comp;
-					value_compare (Compare c) : _comp(c) {}
+					Compare comp;
+					value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
 
 				public:
 					typedef bool result_type;
 					typedef value_type first_argument_type;
 					typedef value_type second_argument_type;
-
-					bool operator() (const value_type& x, const value_type& y) const { return _comp(x.first, y.first); }
+					bool operator() (const value_type& x, const value_type& y) const { return comp(x.first, y.first); }
 			};
 
 			explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _alloc(alloc), _comp(comp), _tree() {}
@@ -60,7 +57,7 @@ namespace ft
 			{
 				this->insert(x.begin(), x.end());;
 			}
-			~map(){ _tree.clear(_tree.getRoot());}
+			~map() { _tree.clear(_tree.getRoot());}
 
 			map& operator=(const map& x)
 			{
@@ -75,38 +72,14 @@ namespace ft
 			}
 
 			// -------------------- Iterator -------------------- //
-			iterator begin()
-			{
-				return (iterator(_tree.firstNode(), _tree.getEnd()));
-			}
-			const_iterator begin() const
-			{
-				return (const_iterator(_tree.firstNode(), _tree.getEnd()));
-			}
-			iterator end()
-			{
-				return (const_iterator(_tree.getEnd(), _tree.getEnd())); 
-			}
-			const_iterator end() const
-			{
-				return (reverse_iterator(iterator(_tree.getEnd(), _tree.getEnd())));
-			}
-			reverse_iterator rbegin()
-			{
-				return (const_reverse_iterator(iterator(_tree.getEnd(), _tree.getEnd())));
-			}
-			const_reverse_iterator rbegin() const
-			{
-				return (const_reverse_iterator(iterator(_tree.getEnd(), _tree.getEnd())));
-			}
-			reverse_iterator rend()
-			{
-				return (reverse_iterator(this->begin()));
-			}
-			const_reverse_iterator rend() const
-			{
-				return (const_reverse_iterator(this->begin()));
-			}
+			iterator begin() { return (iterator(_tree.firstNode(), _tree.getEnd())); }
+			const_iterator begin() const { return (const_iterator(_tree.firstNode(), _tree.getEnd())); }
+			iterator end() { return (iterator(_tree.getEnd(), _tree.getEnd())); }
+			const_iterator end() const { return (const_iterator(_tree.getEnd(), _tree.getEnd())); }
+			reverse_iterator rbegin() { return (reverse_iterator(iterator(_tree.getEnd(), _tree.getEnd()))); }
+			const_reverse_iterator rbegin() const { return (const_reverse_iterator(iterator(_tree.getEnd(), _tree.getEnd()))); }
+			reverse_iterator rend() { return (reverse_iterator(this->begin())); }
+			const_reverse_iterator rend() const { return (const_reverse_iterator(this->begin())); }
 
 			// -------------------- Capacity -------------------- //
 			bool empty() const 
@@ -116,7 +89,7 @@ namespace ft
 				return (false);
 			}
 			size_type size() const { return (_tree.getSize()); }
-			size_type max_size() const { return (_tree.getCapacity()); }
+			size_type max_size() const { return (allocator_type().max_size()); }
 
 			mapped_type& operator[] (const key_type& k)
 			{
@@ -133,7 +106,7 @@ namespace ft
 				erase(begin(), end());
 			}
 
-			ft::pair<iterator, bool> insert( const value_type& value )
+			pair<iterator, bool> insert( const value_type& value )
 			{
 				ft::Node<value_type>*	ptr;
 				bool					find = true;
@@ -144,10 +117,10 @@ namespace ft
 				return (ft::make_pair<iterator, bool>(iterator(ptr, _tree.getEnd()), find));
 			}
 
-			iterator insert( iterator position, const value_type& value )
+			iterator insert(iterator position, const value_type& value)
 			{
 				(void)position;
-				return (_tree.insertNode(value), _tree.getEnd());
+				return (iterator(_tree.insertNode(value), _tree.getEnd()));
 			}
 
 			template <class InputIterator>
