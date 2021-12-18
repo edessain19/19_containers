@@ -4,10 +4,12 @@
 #include <iostream>
 #include <limits>
 #include <iterator>
+#include "../vector/vector.hpp"
+
 
 namespace ft
 {
-    template < class T, class Container = std::deque<T> >
+    template < class T, class Container = ft::vector<T> >
     class stack
     {
         public:
@@ -23,9 +25,7 @@ namespace ft
             stack& operator=(const stack& copy)
             {
                 if (this != &copy)
-                {
                     this->C = copy.C;
-                }
                 return (*this);
             }
 

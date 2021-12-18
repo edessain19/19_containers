@@ -1,5 +1,5 @@
-# ifndef STACK_HPP
-# define STACK_HPP
+# ifndef VECTOR_HPP
+# define VECTOR_HPP
 
 # include <deque>
 # include <iostream>
@@ -35,8 +35,11 @@ namespace ft
 
 			// -------------------- Membre Functions -------------------- //
 			// ---------- constructor ---------- //
-			explicit vector (const allocator_type& alloc = allocator_type()) :  _size(0), _capacity(0) , _base(alloc) { this->_ptr = this->_base.allocate(0); }
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(n), _capacity(n), _base(alloc)
+			explicit vector(const allocator_type& alloc = allocator_type()): _size(0), _capacity(0), _base(alloc)
+			{
+				this->_ptr = this->_base.allocate(0);
+			}
+			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _size(n), _capacity(n), _base(alloc)
 			{
 				this->_ptr = this->_base.allocate(n);
 				for (size_t i = 0; i < n; i++)
@@ -44,7 +47,7 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = nullptr): _base(alloc), _size(0), _capacity(0)
+			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = nullptr): _size(0), _capacity(0), _base(alloc) //Range constructor
 			{
 				for (; first < last; first++)
 					this->_size++;
@@ -55,7 +58,7 @@ namespace ft
 					this->_base.construct(_ptr + i, *(first + i));
 			}
 
-			vector (const vector& x): _size(x._size) , _capacity(x._capacity), _base(allocator_type()) 
+			vector(const vector& x): _size(x._size) , _capacity(x._capacity), _base(allocator_type()) 
 			{
 				this->_ptr = this->_base.allocate(0);
 				*this = x;
@@ -84,15 +87,12 @@ namespace ft
 			// -------------------- Iterator -------------------- //
 			iterator begin() { return (iterator(this->_ptr)); }
 			const_iterator begin() const { return (const_iterator(this->_ptr)); }
-
 			iterator end() { return (iterator(this->_ptr + this->_size)); }
 			const_iterator end() const { return (const_iterator(this->_ptr + this->_size)); }
-
 			reverse_iterator rbegin() { return (reverse_iterator(this->_ptr + this->_size)); }
 			const_reverse_iterator rbegin() const { return (const_reverse_iterator(this->_ptr + this->_size)); }
-
-			reverse_iterator rend() { return (reverse_iterator(this->ptr)); }
-			const_reverse_iterator rend() const { return (const_reverse_iterator(this->ptr)); }
+			reverse_iterator rend() { return (reverse_iterator(this->_ptr)); }
+			const_reverse_iterator rend() const { return (const_reverse_iterator(this->_ptr)); }
 
 			// -------------------- Capacity -------------------- //
 			size_type size() const { return (this->_size); }
@@ -165,9 +165,8 @@ namespace ft
 
 			reference front() { return (*this->_ptr); }
 			const_reference front() const { return (*this->_ptr); }
-
-			reference back() { return (*(this->_ptr + _size - 1)); }
-			const_reference back() const  { return (*(this->_ptr + _size - 1)); }
+			reference back() { return *(this->_ptr + this->_size - 1); }
+			const_reference back() const { return *(this->_ptr + this->_size - 1); }
 
 			// -------------------- Modifiers -------------------- //
 			template <class InputIterator>

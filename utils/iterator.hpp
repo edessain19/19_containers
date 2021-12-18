@@ -58,7 +58,7 @@ namespace ft
 	///////////////////////////////////////////////////////////
 
 template < class T >
-	class It
+	class Itvec
 	{
 		public:
 			//------------------- Member types -------------------//
@@ -68,14 +68,14 @@ template < class T >
 			typedef typename ft::iterator_traits<T*>::pointer             pointer;
 			typedef typename ft::iterator_traits<T*>::reference           reference;
 
-			operator It< const T >() const { return (It< const T>(this->_ptr)); } // https://stackoverflow.com/questions/25117970/conversion-operator-with-const
+			operator Itvec< const T >() const { return (Itvec< const T>(this->_ptr)); } // https://stackoverflow.com/questions/25117970/conversion-operator-with-const
 
 			//------------------- Member functions : Constructors / Destructor -------------------//
-			It(pointer ptr = nullptr): _ptr(ptr) {}
-			It(const It& cpy): _ptr(cpy.base()) {}
-			~It() { _ptr = nullptr; }
+			Itvec(pointer ptr = nullptr): _ptr(ptr) {}
+			Itvec(const Itvec& cpy): _ptr(cpy.base()) {}
+			~Itvec() { _ptr = nullptr; }
 			template < class U >
-			It& operator=(const It<U>& copy)
+			Itvec& operator=(const Itvec<U>& copy)
 			{
 				if (this != &copy)
 					this->_ptr = copy._ptr;
@@ -85,14 +85,14 @@ template < class T >
 			//------------------- Member functions -------------------//
 			reference operator*() const { return (*this->_ptr); }
 			pointer operator->() const { return (this->_ptr); }
-			It& operator++() { this->_ptr++; return (*this); }
-			It operator++(int) { It tmp = *this; ++(*this); return (tmp); }
-			It& operator+=(difference_type n) { this->_ptr += n; return (*this); }
-			It operator+(difference_type n) const { It tmp = *this; return (tmp += n); }
-			It& operator-=(difference_type n) { this->_ptr -= n; return (*this); }
-			It operator-(difference_type n) const { It tmp = *this; return (tmp -= n); }
-			It& operator--() { this->_ptr--; return (*this); }
-			It  operator--(int) { It tmp = *this; --(*this); return (tmp); }
+			Itvec& operator++() { this->_ptr++; return (*this); }
+			Itvec operator++(int) { Itvec tmp = *this; ++(*this); return (tmp); }
+			Itvec& operator+=(difference_type n) { this->_ptr += n; return (*this); }
+			Itvec operator+(difference_type n) const { Itvec tmp = *this; return (tmp += n); }
+			Itvec& operator-=(difference_type n) { this->_ptr -= n; return (*this); }
+			Itvec operator-(difference_type n) const { Itvec tmp = *this; return (tmp -= n); }
+			Itvec& operator--() { this->_ptr--; return (*this); }
+			Itvec  operator--(int) { Itvec tmp = *this; --(*this); return (tmp); }
 			reference operator[](difference_type n) const { return *(this->_ptr + n); }
 
 			pointer base() const { return (this->_ptr); }
@@ -101,48 +101,45 @@ template < class T >
 			pointer _ptr;
 	};
 
-	//-------------------- It non-member functions --------------------//
+	//-------------------- Itvec non-member functions --------------------//
 	template < class T >
-	bool operator==(const ft::It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() == rhs.base()); }
+	bool operator==(const ft::Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() == rhs.base()); }
 	template < class T, class T2 >
-	bool operator==(const ft::It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() == rhs.base()); }
+	bool operator==(const ft::Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() == rhs.base()); }
 	template < class T >
-	bool operator!=(const ft::It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() != rhs.base()); }
+	bool operator!=(const ft::Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() != rhs.base()); }
 	template < class T, class T2 >
-	bool operator!=(const ft::It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() != rhs.base()); }
+	bool operator!=(const ft::Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() != rhs.base()); }
 	template < class T >
-	bool operator<(const ft::It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() < rhs.base()); }
+	bool operator<(const ft::Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() < rhs.base()); }
 	template < class T, class T2 >
-	bool operator<(const ft::It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() < rhs.base()); }
+	bool operator<(const ft::Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() < rhs.base()); }
 	template < class T >
-	bool operator<=(const ft::It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() <= rhs.base()); }
+	bool operator<=(const ft::Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() <= rhs.base()); }
 	template < class T, class T2 >
-	bool operator<=(const ft::It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() <= rhs.base()); }
+	bool operator<=(const ft::Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() <= rhs.base()); }
 	template < class T >
-	bool operator>(const ft::It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() > rhs.base()); }
+	bool operator>(const ft::Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() > rhs.base()); }
 	template < class T, class T2 >
-	bool operator>(const ft::It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() > rhs.base()); }
+	bool operator>(const ft::Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() > rhs.base()); }
 	template < class T >
-	bool operator>=(const ft::It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() >= rhs.base()); }
+	bool operator>=(const ft::Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() >= rhs.base()); }
 	template < class T, class T2 >
-	bool operator>=(const ft::It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() >= rhs.base()); }
+	bool operator>=(const ft::Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() >= rhs.base()); }
 	template < class T >
-	It<T> operator+(typename ft::It<T>::difference_type n, const ft::It<T>& it) { return (It<T>(it.base() + n)); }
+	Itvec<T> operator+(typename ft::Itvec<T>::difference_type n, const ft::Itvec<T>& it) { return (Itvec<T>(it.base() + n)); }
 	template < class T >
-	typename ft::It<T>::difference_type operator-(const It<T>& lhs, const ft::It<T>& rhs) { return (lhs.base() - rhs.base()); }
+	typename ft::Itvec<T>::difference_type operator-(const Itvec<T>& lhs, const ft::Itvec<T>& rhs) { return (lhs.base() - rhs.base()); }
 	template < class T, class T2 >
-	typename ft::It<T>::difference_type operator-(const It<T>& lhs, const ft::It<T2>& rhs) { return (lhs.base() - rhs.base()); }
+	typename ft::Itvec<T>::difference_type operator-(const Itvec<T>& lhs, const ft::Itvec<T2>& rhs) { return (lhs.base() - rhs.base()); }
 
 	///////////////////////////////////////////////////////////
 	//////////////////// Iterator : Map ///////////////////////
 	///////////////////////////////////////////////////////////
 
-	template < typename T, class Compare, typename Node >
+	template < typename T>
 	class Itmap 
 	{
-		private :
-			node_pointer 	_node;
-			node_pointer	_end;
 		public:
 			// ------------------- Member types ------------------- //
 			typedef typename ft::iterator_traits< ft::iterator<ft::bidirectional_iterator_tag, T> >::iterator_category		iterator_category;
@@ -254,6 +251,9 @@ template < class T >
 				operator--();
 				return (tmp);
 			}
+		private :
+			node_pointer 	_node;
+			node_pointer	_end;
 	};
 	//------------------- Itmap : non-member functions -------------------//
 	template < class T >
