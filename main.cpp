@@ -9,7 +9,7 @@
 #include "map/map.hpp"
 
 #ifndef NAMESPACE
-# define NAMESPACE ft
+# define NAMESPACE std
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -542,8 +542,8 @@ void test_get_allocator_vector()
 void test_swap_non_member_vector()
 {
 	//   unsigned int i;
-	NAMESPACE::vector<int> foo(3, 100); // three ints with a value of 100
-	NAMESPACE::vector<int> bar(5, 200); // five ints with a value of 200
+	NAMESPACE::vector<int> foo(3, 100);
+	NAMESPACE::vector<int> bar(5, 200);
 
 	foo.swap(bar);
 
@@ -560,7 +560,6 @@ void test_swap_non_member_vector()
 
 void test_enable_if_and_is_integral_vector()
 {
-	// float i = 1; // code does not compile if type of i is not integral
 	short int i = 1;
 
 	std::cout << std::boolalpha;
@@ -1083,7 +1082,7 @@ void test_vector()
     std::cout << std::endl << "<>----- Test assign -----<>" << std::endl;
     test_assign_vector();
     std::cout << std::endl << "<>----- Test push_back -----<>" << std::endl;
-    //test_push_back_vector();
+    // test_push_back_vector();
     std::cout << std::endl << "<>----- Test pop_back -----<>" << std::endl;
     test_pop_back_vector();
     std::cout << std::endl << "<>----- Test insert -----<>" << std::endl;

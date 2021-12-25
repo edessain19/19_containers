@@ -195,21 +195,21 @@ namespace ft
 			iterator insert(iterator position, const value_type& val)
 			{
 				iterator it;
-				size_t i = 0;
 				size_t j = 0;
+				size_t i = 0;
 
 				for (it = this->begin(); it < position; it++)
-					i++;
+					j++;
 				this->reserve(this->_size + 1);
-				i = this->_size;
 				this->_size += 1;
-				while (j > i)
+				i = this->_size - 1;
+				while (i > j)
 				{
-					this->_ptr[j] = this->_ptr[j - 1];
-					j--;
+					this->_ptr[i] = this->_ptr[i - 1];
+					i--;
 				}
-				this->_ptr[i] = val;
-				return (begin() + i);
+				this->_ptr[j] = val;
+				return (begin() + j);
 			}
 			void insert(iterator position, size_type n, const value_type& val)
 			{
